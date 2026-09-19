@@ -42,6 +42,19 @@ const App = (() => {
     const verifyView = $("auth-view-verify");
     const isSignupMode = () => $("auth-title").textContent === "Create account";
 
+    const setSignupFieldVisibility = (signup) => {
+      const field = $("pw-confirm-field");
+      if (signup) {
+        field.hidden = false;
+        $("auth-confirm").required = true;
+        $("auth-confirm").setAttribute("autocomplete", "new-password");
+      } else {
+        field.hidden = true;
+        $("auth-confirm").required = false;
+        $("auth-confirm").value = "";
+      }
+    };
+
     const showForm = () => {
       formView.hidden = false;
       verifyView.hidden = true;
@@ -64,6 +77,13 @@ const App = (() => {
       $("pw-toggle").textContent = show ? "🙈" : "👁";
     });
 
+    $("pw-confirm-toggle").addEventListener("click", () => {
+      const input = $("auth-confirm");
+      const show = input.type === "password";
+      input.type = show ? "text" : "password";
+      $("pw-confirm-toggle").textContent = show ? "🙈" : "👁";
+    });
+
     $("auth-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const username = $("auth-username").value.trim();
@@ -74,6 +94,7 @@ const App = (() => {
       try {
         if (isSignupMode()) {
           if (password.length < 4) throw new Error("Password must be at least 4 characters");
+          if (password !== $("auth-confirm").value) throw new Error("Passwords don't match");
           submitBtn.disabled = true;
           submitBtn.textContent = "Creating account…";
           const user = await Data.register(username, password);
@@ -103,6 +124,7 @@ const App = (() => {
     const resetAuthModal = () => {
       UI.closeModal("modal-auth");
       $("auth-form").reset();
+      setSignupFieldVisibility(false);
       $("auth-title").textContent = "Sign in";
       $("auth-sub").textContent = "Bottles need an author. Sign in to drop yours.";
       $("auth-submit").textContent = "Sign in";
@@ -135,10 +157,12 @@ const App = (() => {
 
     $("auth-toggle").addEventListener("click", () => {
       const isSignup = isSignupMode();
+      setSignupFieldVisibility(!isSignup);
       $("auth-title").textContent = isSignup ? "Sign in" : "Create account";
       $("auth-sub").textContent = isSignup ? "Bottles need an author. Sign in to drop yours." : "Join to drop your first bottle.";
       $("auth-submit").textContent = isSignup ? "Sign in" : "Create account";
       $("auth-toggle").textContent = isSignup ? "New here? Create an account" : "Already have an account? Sign in";
+      $("auth-err").hidden = true;
     });
   };
 
