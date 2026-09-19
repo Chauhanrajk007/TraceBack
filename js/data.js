@@ -6,6 +6,7 @@ const Data = (() => {
   let mode = "demo";
   let supabaseClient = null;
   let authListeners = [];
+  let cachedSession = null;
 
   const uid = () => (crypto.randomUUID ? crypto.randomUUID() : "id-" + Date.now() + "-" + Math.random().toString(16).slice(2));
 
@@ -59,7 +60,12 @@ const Data = (() => {
         const { createClient } = window.supabase;
         supabaseClient = createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
         mode = "supabase";
-        supabaseClient.auth.onAuthStateChange(() => notifyAuth());
+        const { data } = await supabaseClient.auth.getSession();
+        cachedSession = data && data.session;
+        supabaseClient.auth.onAuthStateChange((_event, session) => {
+          cachedSession = session;
+          notifyAuth();
+        });
       } catch {
         mode = "demo";
       }
@@ -102,9 +108,7 @@ const Data = (() => {
 
   const currentUser = () => {
     if (!isSupabase()) return currentUserDemo();
-    const { data } = supabaseClient.auth.getSession();
-    const session = data.session;
-    return session ? { id: session.user.id, username: session.user.email } : null;
+    return cachedSession ? { id: cachedSession.user.id, username: cachedSession.user.email } : null;
   };
 
   const addCapsule = async (payload) => {
