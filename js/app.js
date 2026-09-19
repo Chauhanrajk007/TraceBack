@@ -23,15 +23,24 @@ const App = (() => {
   };
 
   const init = async () => {
-    // Bind everything BEFORE any network/I/O so the UI always works —
-    // even if Supabase, a CDN, or the map fails.
     UI.bindModalClosers();
     UI.setAuthLabel();
     bindAuth();
     bindActions();
     bindCtas();
-    show("explore"); // Start on the map — that's the heart of the app
-    Home.init();     // Prepare home animations in background
+    show("explore");
+    Home.init();
+
+    // Load Razorpay key from Vercel env (via /api/config serverless function)
+    try {
+      const r = await fetch("/api/config");
+      if (r.ok) {
+        const cfg = await r.json();
+        if (cfg.razorpay_key_id) CONFIG.RAZORPAY_KEY_ID = cfg.razorpay_key_id;
+      }
+    } catch (_) {
+      // local dev without Vercel — key stays as placeholder, payments disabled
+    }
 
     try {
       await Data.init();
@@ -39,7 +48,7 @@ const App = (() => {
       showSetupBanner(e.message);
       return;
     }
-    UI.setAuthLabel(); // a prior session may have been restored
+    UI.setAuthLabel();
 
     window.__rtcInitMap = () => {
       if (!Explore.mapReady()) { try { Explore.init(); } catch (e) { UI.showToast(e.message, true); } }
@@ -52,6 +61,7 @@ const App = (() => {
 
     await loadAll();
   };
+
 
   // --------- router ---------
   const views = () => Array.from(document.querySelectorAll("[data-view]"));

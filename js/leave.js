@@ -15,11 +15,12 @@ const Leave = (() => {
   };
 
   const durationOptions = [
-    { label: "1 Year",    years: 1,   desc: "Short memory — unlocks in a year." },
-    { label: "2 Years",   years: 2,   desc: "Let it breathe a little." },
-    { label: "5 Years",   years: 5,   desc: "For when you want them to feel it later." },
-    { label: "10 Years",  years: 10,  desc: "A decade of waiting." },
-    { label: "Forever",   years: 50,  desc: "Always there, for whoever walks here." }
+    { label: "1 Year",              years: 1,  desc: "A short wait." },
+    { label: "2 Years",             years: 2,  desc: "Let it breathe." },
+    { label: "4 Years (graduation)", years: 4, desc: "Till the next batch walks here." },
+    { label: "5 Years",             years: 5,  desc: "For whoever comes much later." },
+    { label: "10 Years",            years: 10, desc: "A decade of waiting." },
+    { label: "Forever",             years: 50, desc: "Always there, for whoever walks here." }
   ];
 
   const saveDraft = () => {
@@ -134,7 +135,7 @@ const Leave = (() => {
       <div class="leave-inner">
         <h2 class="leave-title">How long should it wait?</h2>
         <p class="leave-sub">Choose when this capsule can be discovered. It still requires physical proximity to open.</p>
-        <div class="duration-grid">
+        <div class="duration-grid three-col">
           ${durationOptions.map(d => `
             <button class="dur-btn ${draft.durationYears === d.years ? "on" : ""}" data-years="${d.years}">
               <span class="dur-label">${d.label}</span>

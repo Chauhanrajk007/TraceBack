@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="css/style.css?v=13" />
-  <link rel="stylesheet" href="css/home.css?v=13" />
+  <link rel="stylesheet" href="css/style.css?v=14" />
+  <link rel="stylesheet" href="css/home.css?v=14" />
 </head>
 <body>
 
@@ -86,9 +86,11 @@
             <div class="uc-icon">🎓</div>
             <div class="uc-label">The College</div>
             <div class="uc-story">
-              <div class="uc-row"><span class="uc-yr">2023</span><span class="uc-q">"First day. Didn't know anyone."</span></div>
-              <div class="uc-arrow">↓ when they graduate</div>
-              <div class="uc-row"><span class="uc-yr">2027</span><span class="uc-q">"Reading this now. Feels like yesterday. You'll make it."</span></div>
+              <div class="uc-row"><span class="uc-yr">2023</span><span class="uc-q">"First day of college. Didn't know anyone."</span></div>
+              <div class="uc-row"><span class="uc-yr">2024</span><span class="uc-q">"Finally found my people."</span></div>
+              <div class="uc-row"><span class="uc-yr">2025</span><span class="uc-q">"Graduating soon. Can't believe it's already over."</span></div>
+              <div class="uc-arrow">↓ unlocks when the next batch walks here</div>
+              <div class="uc-row uc-row-new"><span class="uc-yr">2027</span><span class="uc-q">"Reading this now. Someone lived the same thing before me."</span></div>
             </div>
           </div>
         </div>
@@ -156,48 +158,36 @@
       <button class="modal-close" data-close="modal-plans">✕</button>
       <div class="plans-head">
         <h2>Storage Plans</h2>
-        <p>One-time purchase. No subscription. Your capsules stay permanently.</p>
+        <p>Start free. Buy more space when you need it.<br />One-time purchase — no subscription, ever.</p>
       </div>
       <div class="plans-grid">
+
         <div class="plan-card plan-free">
-          <div class="plan-badge">Free</div>
-          <div class="plan-price">₹0 <span>forever</span></div>
-          <ul class="plan-features">
-            <li>✓ 500 MB storage</li>
-            <li>✓ Up to 20 capsules</li>
-            <li>✓ Text + 1 photo per capsule</li>
-            <li>✓ Connect stories</li>
-            <li>✓ Permanent storage</li>
-          </ul>
-          <button class="btn btn-ghost" disabled>Your current plan</button>
+          <div class="plan-badge">Freemium</div>
+          <div class="plan-price">₹0</div>
+          <div class="plan-storage">500 MB</div>
+          <p class="plan-note">Good for a few capsules with text and a photo or two.</p>
+          <button class="btn btn-ghost" disabled>Your plan</button>
         </div>
+
         <div class="plan-card plan-explorer">
           <div class="plan-badge badge-blue">Explorer</div>
-          <div class="plan-price">₹499 <span>one-time</span></div>
-          <ul class="plan-features">
-            <li>✓ 5 GB storage</li>
-            <li>✓ Unlimited capsules</li>
-            <li>✓ Up to 5 photos per capsule</li>
-            <li>✓ Video support (coming soon)</li>
-            <li>✓ Priority support</li>
-          </ul>
-          <button class="btn btn-primary razorpay-btn" data-plan="explorer" data-amount="49900" data-label="Explorer Pack — 5GB Storage">Buy Explorer Pack</button>
+          <div class="plan-price">₹499</div>
+          <div class="plan-storage">5 GB</div>
+          <p class="plan-note">More capsules, more photos, more memories across more places.</p>
+          <button class="btn btn-primary razorpay-btn" data-plan="explorer" data-amount="49900" data-label="Explorer Pack — 5 GB Storage">Buy Explorer</button>
         </div>
+
         <div class="plan-card plan-legacy">
           <div class="plan-badge badge-gold">Legacy</div>
-          <div class="plan-price">₹999 <span>one-time</span></div>
-          <ul class="plan-features">
-            <li>✓ 50 GB storage</li>
-            <li>✓ Unlimited capsules</li>
-            <li>✓ Unlimited photos + videos</li>
-            <li>✓ Custom unlock dates</li>
-            <li>✓ Journey trails</li>
-            <li>✓ Legacy badge on profile</li>
-          </ul>
-          <button class="btn btn-primary razorpay-btn" data-plan="legacy" data-amount="99900" data-label="Legacy Pack — 50GB Storage">Buy Legacy Pack</button>
+          <div class="plan-price">₹999</div>
+          <div class="plan-storage">50 GB</div>
+          <p class="plan-note">For when you want to leave a lot behind — journeys, photos, decades of memories.</p>
+          <button class="btn btn-primary razorpay-btn" data-plan="legacy" data-amount="99900" data-label="Legacy Pack — 50 GB Storage">Buy Legacy</button>
         </div>
+
       </div>
-      <p class="plans-foot">🔒 Payments secured by Razorpay. One-time purchase — no recurring charges ever.</p>
+      <p class="plans-foot">🔒 Secured by Razorpay · One-time · No recurring charges</p>
     </div>
   </div>
 
@@ -263,15 +253,15 @@
   </script>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js?v=13"></script>
-  <script src="js/geo.js?v=13"></script>
-  <script src="js/data.js?v=13"></script>
-  <script src="js/ui.js?v=13"></script>
-  <script src="js/explore.js?v=13"></script>
-  <script src="js/place.js?v=13"></script>
-  <script src="js/leave.js?v=13"></script>
-  <script src="js/traces.js?v=13"></script>
-  <script src="js/app.js?v=13"></script>
-  <script src="js/home.js?v=13"></script>
+  <script src="js/config.js?v=14"></script>
+  <script src="js/geo.js?v=14"></script>
+  <script src="js/data.js?v=14"></script>
+  <script src="js/ui.js?v=14"></script>
+  <script src="js/explore.js?v=14"></script>
+  <script src="js/place.js?v=14"></script>
+  <script src="js/leave.js?v=14"></script>
+  <script src="js/traces.js?v=14"></script>
+  <script src="js/app.js?v=14"></script>
+  <script src="js/home.js?v=14"></script>
 </body>
 </html>
