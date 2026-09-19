@@ -22,6 +22,10 @@ create table if not exists public.capsules (
   created_at timestamptz not null default now()
 );
 
+grant usage on schema public to anon, authenticated;
+grant all on public.capsules to anon, authenticated;
+grant all on public.profiles to anon, authenticated;
+
 -- anyone may read capsules (they are only revealed client-side by GPS/time)
 alter table public.capsules enable row level security;
 drop policy if exists "capsules_select_all" on public.capsules;
