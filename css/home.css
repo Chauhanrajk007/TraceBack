@@ -360,6 +360,54 @@
   font-weight: 500;
 }
 
+/* 10-step full flow chain */
+.full-flow-chain {
+  margin-top: 36px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 24px 20px;
+  box-shadow: 0 4px 18px rgba(30, 45, 90, 0.04);
+  text-align: center;
+}
+.chain-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+.chain-steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+}
+.cs-item {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  padding: 7px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+.cs-sep {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 12px;
+  transform: rotate(-90deg);
+}
+@media (min-width: 768px) {
+  .cs-sep { transform: none; }
+  .chain-steps .cs-sep::before { content: "→"; }
+  .chain-steps .cs-sep { font-size: 0; }
+  .chain-steps .cs-sep::before { font-size: 13px; color: var(--accent); }
+}
+
 /* ---------- MAIN IDEA ---------- */
 .idea-wrap { max-width: 720px; margin: 0 auto; }
 .idea-mems {
@@ -375,6 +423,10 @@
   border-radius: 16px;
   padding: 20px;
   box-shadow: 0 4px 16px rgba(30, 45, 90, 0.04);
+}
+.mem-chip.highlight-chip {
+  background: #f7f9ff;
+  border-color: rgba(49, 94, 251, 0.35);
 }
 .mem-chip .m-yr {
   font-family: "Fraunces", serif;
@@ -401,13 +453,38 @@
   color: var(--text);
 }
 .idea-tag b { color: var(--accent); }
+.idea-connect-preview {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+.idea-action-box {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 18px 24px;
+  text-align: center;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  box-shadow: 0 4px 16px rgba(30, 45, 90, 0.04);
+}
+.connect-chip {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 13.5px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  display: inline-block;
+}
 .idea-note {
   text-align: center;
   color: var(--muted);
   font-size: 14px;
   line-height: 1.7;
   max-width: 520px;
-  margin: 14px auto 0;
+  margin: 0;
 }
 
 /* ---------- FINAL CTA ---------- */

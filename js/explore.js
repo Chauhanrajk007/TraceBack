@@ -72,6 +72,13 @@ const Explore = (() => {
     }
     updateChip();
 
+    if (placesData.length && !currentLocation && map) {
+      try {
+        const bounds = L.latLngBounds(placesData.map((p) => [p.lat, p.lng]));
+        map.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
+      } catch (_) {}
+    }
+
     if (!placesData.length) {
       UI.showToast("No traces yet — be the first to leave one.", false);
     }
@@ -96,10 +103,10 @@ const Explore = (() => {
     if (currentLocation) {
       const d = Geo.distanceMeters(p.lat, p.lng, currentLocation.lat, currentLocation.lng);
       lockLine = d <= R
-        ? `<div class="pop-lock on">✨ You're here — their traces are open.</div>`
-        : `<div class="pop-lock">📍 Locked · ${Math.round(d)} m away — walk closer to open.</div>`;
+        ? `<div class="pop-lock on">✨ You're here. Someone was here before you.</div>`
+        : `<div class="pop-lock">📍 A trace is nearby — ${Math.round(d)} m away.<br /><small>Content unlocks within 50–100m.</small></div>`;
     } else {
-      lockLine = `<div class="pop-lock">🔒 Reach this spot to read their traces.</div>`;
+      lockLine = `<div class="pop-lock">🔒 Content stays locked until you physically reach the 50–100m radius.</div>`;
     }
     const popHtml = `
       <div class="pop">
@@ -107,9 +114,9 @@ const Explore = (() => {
         <div class="pop-meta">${s.people} ${s.people === 1 ? "person" : "people"} left traces here</div>
         <div class="pop-meta">${yearRange}</div>
         ${lockLine}
-        <button class="btn btn-primary btn-sm" id="pop-open-${p.id}">See What They Left</button>
+        <button class="btn btn-primary btn-sm" id="pop-open-${p.id}">Discover Place</button>
       </div>`;
-    marker.bindPopup(popHtml, { maxWidth: 220 });
+    marker.bindPopup(popHtml, { maxWidth: 240 });
     marker.on("popupopen", () => {
       const btn = document.getElementById("pop-open-" + p.id);
       if (btn) btn.onclick = () => { App.openPlace(p); };

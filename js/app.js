@@ -66,6 +66,7 @@ const App = (() => {
       n.classList.toggle("active", n.dataset.view === view);
     });
     if (view === "explore") Explore.resize();
+    if (view === "trails") Trails.refresh();
     if (view === "traces") Traces.refresh();
   };
 

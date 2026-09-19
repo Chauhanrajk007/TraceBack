@@ -41,6 +41,7 @@ const content = `const CONFIG = {
   SUPABASE_URL: ${JSON.stringify(url)},
   SUPABASE_ANON_KEY: ${JSON.stringify(key)},
   UNLOCK_RADIUS_METERS: ${radius},
+  PLACE_RADIUS_METERS: ${radius},
   MAP_CENTER: [20.5937, 78.9629],
   MAP_ZOOM: 5
 };`;

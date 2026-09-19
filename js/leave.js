@@ -74,19 +74,19 @@ const Leave = (() => {
     const presetName = draft.place ? draft.place.name : "";
     const at = draft.lat != null ? `${draft.lat.toFixed(5)}, ${draft.lng.toFixed(5)}` : "not chosen yet";
     return `
-      <h1 class="leave-title">Leave a Trace</h1>
+      <h1 class="leave-title">${draft.reply ? "Connect These Stories" : "Leave a Trace"}</h1>
       ${draft.reply
-        ? `<p class="leave-sub">Connect to <b>${esc(draft.reply.author)}</b>'s trace at this place.</p>`
-        : `<p class="leave-sub">Where are you?</p>`}
+        ? `<p class="leave-sub">You found someone who felt the same way. Connecting at <b>${esc(draft.place ? draft.place.name : "this place")}</b>.</p>`
+        : `<p class="leave-sub">Where are you standing?</p>`}
       <div class="card step-card">
         <div class="step-loc-buttons">
           <button class="btn btn-primary" id="l-locate">◎ Use my location</button>
           <button class="btn btn-ghost" id="l-pick">🗺 Choose on map</button>
         </div>
-        <div class="loc-readout">📍 ${draft.place ? `Adding to <b>${esc(draft.place.name)}</b>` : esc(at)}</div>
+        <div class="loc-readout">📍 ${draft.place ? `Leaving trace at <b>${esc(draft.place.name)}</b>` : esc(at)}</div>
         <div class="field" ${draft.place ? "hidden" : ""} id="l-name-field">
           <label>Name this place</label>
-          <input id="l-name" type="text" placeholder="e.g. A College, a corner café, the mountain path…" value="${esc(presetName)}" />
+          <input id="l-name" type="text" placeholder="e.g. The College Campus, corner café, mountain path…" value="${esc(presetName)}" />
         </div>
       </div>
       <div class="step-nav">
@@ -97,14 +97,20 @@ const Leave = (() => {
 
   // --------- STEP 2: WHAT ---------
   const step2Html = () => `
-      <h1 class="leave-title">Leave a Trace</h1>
+      <h1 class="leave-title">${draft.reply ? "Connect These Stories" : "Leave a Trace"}</h1>
       ${draft.reply
-        ? `<p class="leave-sub">What would you say to <b>${esc(draft.reply.author)}</b>?</p>`
-        : `<p class="leave-sub">What do you want to leave?</p>`}
+        ? `<p class="leave-sub">You found someone who felt the same way.</p>`
+        : `<p class="leave-sub">What do you want to leave behind?</p>`}
       <div class="card step-card">
+        ${draft.reply ? `
+          <div class="reply-box card">
+            <div class="rp-meta"><b>${esc(draft.reply.author)}</b> (${draft.reply.year || "earlier"}) wrote:</div>
+            <div class="rp-quote">"${esc(draft.reply.preview)}"</div>
+          </div>
+        ` : ""}
         <div class="field">
-          <label>Your memory</label>
-          <textarea id="l-note" rows="5" placeholder="${draft.reply ? "Write what you'd say to them…" : "Write something for whoever finds this…"}">${esc(draft.note)}</textarea>
+          <label>${draft.reply ? "Your memory (how you relate)" : "Your memory"}</label>
+          <textarea id="l-note" rows="5" placeholder="${draft.reply ? "e.g. That's exactly why I came here. I still sit here thinking about the same thing…" : "Write something for whoever finds this…" }">${esc(draft.note)}</textarea>
         </div>
         <div class="field">
           <label>Add a photo <span class="opt">(optional)</span></label>
@@ -123,17 +129,17 @@ const Leave = (() => {
   // --------- STEP 3: WHEN ---------
   const step3Html = () => `
       <h1 class="leave-title">Leave a Trace</h1>
-      <p class="leave-sub">When should people see it?</p>
+      <p class="leave-sub">When should people discover it?</p>
       <div class="card step-card">
         <div class="when-row">
-          <button class="when-btn ${draft.unlockAt === "now" ? "on" : ""}" id="w-now">Now</button>
-          <button class="when-btn ${draft.unlockAt !== "now" ? "on" : ""}" id="w-later">Later</button>
+          <button class="when-btn ${draft.unlockAt === "now" ? "on" : ""}" id="w-now">Now (within 50-100m)</button>
+          <button class="when-btn ${draft.unlockAt !== "now" ? "on" : ""}" id="w-later">Future Date</button>
         </div>
         <div class="date-row" id="w-date-row" ${draft.unlockAt === "now" ? "hidden" : ""}>
           ${["1mo", "6mo", "1yr", "5yr"].map((c) => `<button class="chip" data-d="${c}">+ ${c}</button>`).join("")}
           <label class="date-custom"><input type="date" id="w-date" />pick date</label>
         </div>
-        <p class="loc-readout" id="w-preview"></p>
+        <p class="loc-readout" id="w-preview">It will unlock only when someone physically stands within 50–100m.</p>
       </div>
       <div class="step-nav">
         <button class="btn btn-ghost" id="l-back">← Back</button>
@@ -142,22 +148,22 @@ const Leave = (() => {
 
   // --------- STEP 4: LEAVE ---------
   const step4Html = () => {
-    const whenLabel = draft.unlockAt === "now" ? "as soon as you leave it" : `opens on ${Geo.fmtDate(draft.unlockAt)}`;
+    const whenLabel = draft.unlockAt === "now" ? "open now (when physically within 100m)" : `opens on ${Geo.fmtDate(draft.unlockAt)} (within 100m)`;
     const replyRow = draft.reply
-      ? `<div class="review-row"><b>Connected to</b><span>${esc(draft.reply.author)}'s trace — "${esc((draft.reply.preview || "").slice(0, 60))}${(draft.reply.preview || "").length > 60 ? "…" : ""}"</span></div>`
+      ? `<div class="review-row"><b>Connecting With</b><span>${esc(draft.reply.author)}'s memory — "${esc((draft.reply.preview || "").slice(0, 60))}${(draft.reply.preview || "").length > 60 ? "…" : ""}"</span></div>`
       : "";
     return `
-      <h1 class="leave-title">Leave a Trace</h1>
-      <p class="leave-sub">Almost there.</p>
+      <h1 class="leave-title">${draft.reply ? "Connect These Stories" : "Leave a Trace"}</h1>
+      <p class="leave-sub">${draft.reply ? "Two people. Same place. Same feeling. Different time." : "Ready to seal it in place."}</p>
       <div class="card step-card">
         <div class="review-row"><b>Place</b><span>${esc(draft.place ? draft.place.name : "unnamed spot")}</span></div>
         ${replyRow}
         <div class="review-row"><b>Memory</b><span>${esc((draft.note || "").slice(0, 90))}${(draft.note || "").length > 90 ? "…" : ""}</span></div>
-        <div class="review-row"><b>When</b><span>${whenLabel}</span></div>
+        <div class="review-row"><b>Physical Unlock</b><span>${whenLabel}</span></div>
       </div>
       <div class="step-nav">
         <button class="btn btn-ghost" id="l-back">← Back</button>
-        <button class="btn btn-primary" id="l-leave">${draft.reply ? "Connect & leave it behind" : "Leave it behind"}</button>
+        <button class="btn btn-primary" id="l-leave">${draft.reply ? "🤝 Connect These Stories" : "Leave it behind"}</button>
       </div>`;
   };
 
@@ -284,16 +290,22 @@ const Leave = (() => {
       }
       App.loadAll();
       localStorage.removeItem(DRAFT_KEY);
-      const connected = draft.reply ? `<p>Connected to <b>${esc(draft.reply.author)}</b>'s trace — two people, same moment.</p>` : "";
+      const connected = draft.reply
+        ? `<div class="done-connected">
+            <span class="badge open">✨ Connected Story</span>
+            <p><b>Same place. Same feeling. Different time.</b></p>
+            <p>Your memory is now quietly linked with <b>${esc(draft.reply.author)}</b>'s trace. Now you are part of the same story.</p>
+          </div>`
+        : "";
       document.getElementById("leave-body").innerHTML = `
         <div class="done card">
           <div class="stub-icon">🌊</div>
-          <h1>It's out there now.</h1>
-          <p>Someone may find it tomorrow.<br />Or years from now.</p>
+          <h1>${draft.reply ? "Stories Connected." : "It's out there now."}</h1>
+          <p>${draft.reply ? "Two people years apart, bound by this spot." : "Someone will find it when they walk here.<br />Tomorrow, or years from now."}</p>
           ${connected}
           <div class="hero-actions">
             <button class="btn btn-primary" id="done-explore">Find it on the map</button>
-            <button class="btn btn-ghost" id="done-leave">Leave another</button>
+            <button class="btn btn-ghost" id="done-leave">Back to Home</button>
           </div>
         </div>`;
       document.getElementById("done-explore").addEventListener("click", () => App.show("explore"));
