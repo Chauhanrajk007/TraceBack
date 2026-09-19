@@ -115,10 +115,8 @@ const UI = (() => {
     showToast,
     openModal,
     closeModal,
-    esc,
     setAuthLabel,
     bindModalClosers,
-    renderCapsuleView,
-    capsuleState
+    renderCapsuleView
   };
 })();

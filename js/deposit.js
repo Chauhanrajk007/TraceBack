@@ -1,6 +1,4 @@
 const Deposit = (() => {
-  let photoFile = null;
-  let audioFile = null;
   let pos = null;
 
   const todayPlus = (days) => {
@@ -199,16 +197,12 @@ const Deposit = (() => {
 
   const resetForm = () => {
     pos = null;
-    photoFile = null;
-    audioFile = null;
     renderForm();
   };
 
   return {
     renderForm,
     showPanel,
-    hidePanel,
-    onMapPick,
-    useLocationPin
+    hidePanel
   };
 })();

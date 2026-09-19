@@ -168,13 +168,10 @@ const Explore = (() => {
     init,
     setCapsules,
     locateMe,
-    setUserLocation,
     setPin,
     clearPin,
     focusOn,
     setPickMode,
-    getMap: () => map,
-    getLocation: () => currentLocation,
     refreshCapsules: setCapsules
   };
 })();
