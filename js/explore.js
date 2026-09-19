@@ -9,6 +9,7 @@ const Explore = (() => {
   const authorCache = {};
 
   let onMapPick = null;
+  let locating = false;
 
   const init = async () => {
     map = L.map("map", { zoomControl: true }).setView(CONFIG.MAP_CENTER, CONFIG.MAP_ZOOM);
@@ -119,12 +120,19 @@ const Explore = (() => {
   };
 
   const locateMe = async () => {
+    if (locating) return;
+    locating = true;
+    const btn = document.getElementById("locate-btn");
+    if (btn) btn.disabled = true;
     try {
       const loc = await Geo.getCurrentPosition();
       setUserLocation(loc);
-      UI.showToast("📍 You're placed on the map");
+      UI.showToast("You're placed on the map");
     } catch (e) {
       UI.showToast(e.message, true);
+    } finally {
+      locating = false;
+      if (btn) btn.disabled = false;
     }
   };
 

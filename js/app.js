@@ -2,15 +2,14 @@ const App = (() => {
   const $ = (id) => document.getElementById(id);
 
   const init = async () => {
-    if (CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY) {
-      $("setup-banner").hidden = true;
-    } else {
+    try {
+      await Data.init();
+    } catch (e) {
       const banner = $("setup-banner");
       banner.hidden = false;
-      banner.innerHTML = `⚙️ Running in <b>local demo mode</b> (data stays in this browser). Add your free Supabase URL + anon key in <code>js/config.js</code> to go online — <a href="https://supabase.com/dashboard" target="_blank" rel="noopener">get keys free here</a>.`;
+      banner.innerHTML = `⚠️ ${e.message}`;
+      return;
     }
-
-    await Data.init();
     bindAuth();
     UI.bindModalClosers();
     UI.setAuthLabel();

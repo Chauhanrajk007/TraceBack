@@ -11,12 +11,8 @@ const Geo = (() => {
     return 2 * R * Math.asin(Math.sqrt(a));
   };
 
-  const getCurrentPosition = () =>
+  const request = (opts) =>
     new Promise((resolve, reject) => {
-      if (!navigator.geolocation) {
-        reject(new Error("Geolocation is not supported by this browser"));
-        return;
-      }
       navigator.geolocation.getCurrentPosition(
         (pos) =>
           resolve({
@@ -24,10 +20,26 @@ const Geo = (() => {
             lng: pos.coords.longitude,
             accuracy: pos.coords.accuracy || 0
           }),
-        (err) => reject(new Error("Could not get your location: " + messageFor(err))),
-        { enableHighAccuracy: true, timeout: 20000, maximumAge: 60000 }
+        (err) => reject(err),
+        { timeout: 18000, maximumAge: 60000, enableHighAccuracy: true, ...opts }
       );
     });
+
+  const getCurrentPosition = async () => {
+    if (!navigator.geolocation) {
+      throw new Error("Geolocation is not supported by this browser");
+    }
+    try {
+      return await request();
+    } catch (firstErr) {
+      try {
+        return await request({ enableHighAccuracy: false, timeout: 25000 });
+      } catch (secondErr) {
+        const use = firstErr.code != null ? firstErr : secondErr;
+        throw new Error("Could not get your location: " + messageFor(use));
+      }
+    }
+  };
 
   const messageFor = (err) => {
     switch (err.code) {
