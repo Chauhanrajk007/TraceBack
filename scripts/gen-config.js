@@ -22,6 +22,7 @@ const env = loadEnv();
 const url = (process.env.SUPABASE_URL || env.SUPABASE_URL || "").trim();
 const key = (process.env.SUPABASE_ANON_KEY || env.SUPABASE_ANON_KEY || "").trim();
 const radius = Number(process.env.UNLOCK_RADIUS_METERS || env.UNLOCK_RADIUS_METERS) || 100;
+const razorpayKeyId = (process.env.RAZORPAY_KEY_ID || env.RAZORPAY_KEY_ID || "").trim();
 
 const detectRole = (jwt) => {
   try {
@@ -40,6 +41,7 @@ if (key && detectRole(key) === "service_role") {
 const content = `const CONFIG = {
   SUPABASE_URL: ${JSON.stringify(url)},
   SUPABASE_ANON_KEY: ${JSON.stringify(key)},
+  RAZORPAY_KEY_ID: ${JSON.stringify(razorpayKeyId)},
   UNLOCK_RADIUS_METERS: ${radius},
   PLACE_RADIUS_METERS: ${radius},
   MAP_CENTER: [20.5937, 78.9629],

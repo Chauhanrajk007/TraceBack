@@ -175,6 +175,7 @@ const Data = (() => {
   const getLocalItems = (key) => {
     try { return JSON.parse(localStorage.getItem(key) || "[]"); } catch (_) { return []; }
   };
+  const getLocalMemories = () => getLocalItems(LOCAL_MEMORIES_KEY);
 
   const saveLocalItem = (key, item) => {
     try {
@@ -351,8 +352,8 @@ const Data = (() => {
 
   // ---------- storage tracking ----------
   const STORAGE_KEY = "rtc_storage_used_bytes";
-  // Plan limits in bytes  (free = 200 MB)
-  const STORAGE_LIMITS = { free: 200 * 1024 * 1024, explorer: 5 * 1024 * 1024 * 1024, legacy: 50 * 1024 * 1024 * 1024 };
+  // Plan limits in bytes  (free = 500 MB)
+  const STORAGE_LIMITS = { free: 500 * 1024 * 1024, explorer: 5 * 1024 * 1024 * 1024, legacy: 50 * 1024 * 1024 * 1024 };
   const PLAN_KEY = "rtc_plan"; // "free" | "explorer" | "legacy"
 
   const getStorageUsed = () => {
@@ -419,6 +420,7 @@ const Data = (() => {
     listMemories, listMemoriesForPlace, addMemory,
     addLink, listLinks,
     uploadFile,
-    getStorageUsed, getStorageLimit, getCurrentPlan, setPlan, fmtBytes, checkStorageFor
+    getStorageUsed, getStorageLimit, getCurrentPlan, setPlan, fmtBytes, checkStorageFor,
+    getLocalMemories
   };
 })();

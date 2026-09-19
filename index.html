@@ -31,7 +31,6 @@
 
   <!-- ======================== OPENING ======================== -->
   <div id="opening" class="opening" aria-hidden="true">
-    <button id="o-skip" type="button">Skip →</button>
     <div class="o-world">
       <div class="o-grid"></div>
       <div class="o-point"></div>
@@ -39,17 +38,14 @@
       <div class="o-place o-mountain">
         <div class="o-pin"></div>
         <span class="o-lab">Mountain</span>
-        <div class="o-yrs"><span>2022</span><span>2024</span><span>2026</span></div>
       </div>
       <div class="o-place o-college">
         <div class="o-pin"></div>
         <span class="o-lab">College</span>
-        <div class="o-yrs"><span>2023</span><span>2024</span><span>2026</span></div>
       </div>
       <div class="o-place o-cafe">
         <div class="o-pin"></div>
         <span class="o-lab">Café</span>
-        <div class="o-yrs"><span>2024</span><span>2025</span><span>2026</span></div>
       </div>
     </div>
     <div class="o-copy">
@@ -123,6 +119,7 @@
     <div class="fab">
       <button id="drop-capsule-btn" class="btn btn-primary fab-btn drop-btn" hidden>📍 Drop capsule here</button>
       <button id="locate-btn" class="btn btn-ghost fab-btn" title="Show my location">◎ My location</button>
+      <button class="btn btn-ghost fab-btn" data-goto="traces" title="View your personal dashboard">📊 Dashboard</button>
     </div>
 
     <div class="legend">
@@ -144,10 +141,10 @@
     <div class="leave-wrap" id="leave-body"></div>
   </section>
 
-  <!-- ========================== MY TRACES =========================== -->
+  <!-- ========================== DASHBOARD =========================== -->
   <section class="view scroll-view" data-view="traces" hidden>
     <div class="page-head">
-      <h1>My Traces</h1>
+      <h1>Personal Dashboard</h1>
     </div>
     <div id="traces-body"></div>
   </section>
@@ -253,15 +250,15 @@
   </script>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js?v=15"></script>
-  <script src="js/geo.js?v=15"></script>
-  <script src="js/data.js?v=15"></script>
-  <script src="js/ui.js?v=15"></script>
-  <script src="js/explore.js?v=15"></script>
-  <script src="js/place.js?v=15"></script>
-  <script src="js/leave.js?v=15"></script>
-  <script src="js/traces.js?v=15"></script>
-  <script src="js/app.js?v=15"></script>
-  <script src="js/home.js?v=15"></script>
+  <script src="js/config.js?v=16"></script>
+  <script src="js/geo.js?v=16"></script>
+  <script src="js/data.js?v=16"></script>
+  <script src="js/ui.js?v=16"></script>
+  <script src="js/explore.js?v=16"></script>
+  <script src="js/place.js?v=16"></script>
+  <script src="js/leave.js?v=16"></script>
+  <script src="js/traces.js?v=16"></script>
+  <script src="js/app.js?v=16"></script>
+  <script src="js/home.js?v=16"></script>
 </body>
 </html>

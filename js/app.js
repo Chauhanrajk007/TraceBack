@@ -284,20 +284,68 @@ const App = (() => {
       startLeave(loc ? { lat: loc.lat, lng: loc.lng } : {});
     });
 
+    // Plans modal UI updater
+    const updatePlansModalUI = () => {
+      const current = Data.getCurrentPlan();
+      document.querySelectorAll(".plan-card").forEach((card) => {
+        const btn = card.querySelector("button");
+        if (!btn) return;
+        if (card.classList.contains("plan-free")) {
+          btn.textContent = current === "free" ? "Current Plan" : "Free Tier";
+          btn.disabled = current === "free";
+        } else if (card.classList.contains("plan-explorer")) {
+          if (current === "explorer" || current === "legacy") {
+            btn.textContent = "✓ Activated";
+            btn.disabled = true;
+          } else {
+            btn.textContent = "Buy Explorer";
+            btn.disabled = false;
+          }
+        } else if (card.classList.contains("plan-legacy")) {
+          if (current === "legacy") {
+            btn.textContent = "✓ Activated";
+            btn.disabled = true;
+          } else {
+            btn.textContent = "Buy Legacy";
+            btn.disabled = false;
+          }
+        }
+      });
+    };
+
     // Plans modal
-    $("plans-btn").addEventListener("click", () => UI.openModal("modal-plans"));
+    $("plans-btn").addEventListener("click", () => {
+      updatePlansModalUI();
+      UI.openModal("modal-plans");
+    });
 
     // Razorpay payment buttons (one-time purchase)
     document.querySelectorAll(".razorpay-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
         const user = Data.currentUser();
-        if (!user) { UI.showToast("Sign in first to buy a plan.", true); return; }
-        if (!window.Razorpay) { UI.showToast("Payment gateway loading… try again in a moment.", true); return; }
+        if (!user) {
+          UI.showToast("Please sign in first so your upgraded plan is linked to your account.", false);
+          openAuthModal();
+          return;
+        }
+
+        const keyId = (CONFIG.RAZORPAY_KEY_ID || "").trim();
+        if (!keyId || keyId.includes("PASTE") || keyId.includes("REPLACE")) {
+          UI.showToast("Razorpay Key ID not detected yet. Please ensure RAZORPAY_KEY_ID is set in Vercel environment variables.", true);
+          return;
+        }
+
+        if (!window.Razorpay) {
+          UI.showToast("Payment gateway is loading… please retry in 2 seconds.", true);
+          return;
+        }
+
         const amount = parseInt(btn.dataset.amount, 10);
         const plan = btn.dataset.plan;   // "explorer" | "legacy"
         const label = btn.dataset.label || plan;
+
         const options = {
-          key: CONFIG.RAZORPAY_KEY_ID,
+          key: keyId,
           amount,
           currency: "INR",
           name: "Leave a Trace",
@@ -306,13 +354,23 @@ const App = (() => {
           prefill: { email: user.username },
           theme: { color: "#315efb" },
           handler: () => {
-            Data.setPlan(plan);           // unlock storage limit locally
+            Data.setPlan(plan);           // unlock storage limit
+            updatePlansModalUI();
             UI.closeModal("modal-plans");
-            UI.showToast(`🎉 ${label} unlocked! Storage upgraded.`);
+            UI.showToast(`🎉 ${label} activated! Your storage has been upgraded to ${plan === "legacy" ? "50 GB" : "5 GB"}.`);
             Traces.refresh();             // re-render dashboard with new storage bar
           }
         };
-        new window.Razorpay(options).open();
+
+        try {
+          const rzp = new window.Razorpay(options);
+          rzp.on("payment.failed", (response) => {
+            UI.showToast(response.error ? response.error.description : "Payment could not be completed.", true);
+          });
+          rzp.open();
+        } catch (err) {
+          UI.showToast(err.message, true);
+        }
       });
     });
 

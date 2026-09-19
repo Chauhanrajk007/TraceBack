@@ -1,7 +1,6 @@
 /* ============================================================
    HOME — landing page behaviour
-   short calm opening (once per page load), scroll reveals,
-   college micro-timeline
+   calm opening, scroll reveals, college micro-timeline
    ============================================================ */
 (() => {
   const Home = {};
@@ -11,18 +10,12 @@
 
   let playedOnce = false;
   let timers = [];
-  let cut = false;
 
-  function clearTimers() {
-    timers.forEach((t) => clearTimeout(t));
-    timers = [];
-  }
   function after(ms, fn) {
-    if (cut) return;
-    timers.push(setTimeout(() => { if (!cut) fn(); }, ms));
+    timers.push(setTimeout(fn, ms));
   }
 
-  /* ---------- opening sequence (short) ---------- */
+  /* ---------- opening sequence ---------- */
   async function playOpening() {
     const o = $("#opening");
     if (!o || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -39,36 +32,32 @@
     const places = $$(".o-place", o);
 
     o.classList.add("playing");
-    after(150, () => world.classList.add("on"));
-    after(600, () => line1.classList.add("on"));
-    after(1400, () => point.classList.add("on"));
-    after(1500, () => ring.classList.add("on"));
+    after(150, () => world && world.classList.add("on"));
+    after(600, () => line1 && line1.classList.add("on"));
+    after(1400, () => point && point.classList.add("on"));
+    after(1500, () => ring && ring.classList.add("on"));
     after(2300, () => places[0] && places[0].classList.add("on"));
     after(2650, () => places[1] && places[1].classList.add("on"));
     after(3000, () => places[2] && places[2].classList.add("on"));
     after(3350, () => places[3] && places[3].classList.add("on"));
 
     after(3800, () => {
-      if (cut) return;
       places.forEach((p) => p.classList.add("traced"));
-      caption.classList.add("on");
+      caption && caption.classList.add("on");
     });
-    after(5000, () => {
+
+    // 2 more seconds on screen before fading (7000ms instead of 5000ms)
+    after(7000, () => {
       o.classList.add("hide");
-      after(600, () => o.remove());
+      after(800, () => o.remove());
       heroReveal();
     });
 
     /* guard — never leave the overlay up */
-    after(5800, () => { o.remove(); heroReveal(); });
-  }
-
-  function skipOpening() {
-    cut = true;
-    clearTimers();
-    const o = $("#opening");
-    if (o) o.remove();
-    heroReveal();
+    after(8200, () => {
+      o.remove();
+      heroReveal();
+    });
   }
 
   function heroReveal() {
@@ -132,8 +121,6 @@
     });
     if (!playedOnce) {
       playedOnce = true;
-      const skip = $("#o-skip");
-      if (skip) skip.addEventListener("click", skipOpening);
       playOpening();
     } else {
       heroReveal();
