@@ -66,7 +66,6 @@ const App = (() => {
       n.classList.toggle("active", n.dataset.view === view);
     });
     if (view === "explore") Explore.resize();
-    if (view === "trails") Trails.refresh();
     if (view === "traces") Traces.refresh();
   };
 
@@ -267,7 +266,6 @@ const App = (() => {
     $("brand").addEventListener("click", () => show("home"));
     $("locate-btn").addEventListener("click", () => Explore.locateMe());
     $("place-back").addEventListener("click", () => show("explore"));
-    $("pick-cancel").addEventListener("click", () => Explore.setPickMode(false));
     $("auth-btn").addEventListener("click", async () => {
       const user = Data.currentUser();
       if (user) {
