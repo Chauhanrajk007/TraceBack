@@ -1,5 +1,9 @@
 const Leave = (() => {
   const $ = (id) => document.getElementById(id);
+  const esc = (s) =>
+    String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[c]));
   let step = 1;
   let draft = {
     place: null,      // {id, name, lat, lng}
@@ -8,7 +12,8 @@ const Leave = (() => {
     note: "",
     photo: null,
     photoUrl: null,
-    unlockAt: "now"   // "now" or ISO string
+    unlockAt: "now",  // "now" or ISO string
+    reply: null       // {id, author, preview} — memory being connected to
   };
 
   const open = (preset) => {
@@ -20,7 +25,8 @@ const Leave = (() => {
       note: "",
       photo: null,
       photoUrl: null,
-      unlockAt: "now"
+      unlockAt: "now",
+      reply: (preset && preset.reply) || null
     };
     App.show("leave");
     render();
@@ -49,7 +55,9 @@ const Leave = (() => {
     const at = draft.lat != null ? `${draft.lat.toFixed(5)}, ${draft.lng.toFixed(5)}` : "not chosen yet";
     return `
       <h1 class="leave-title">Leave a Trace</h1>
-      <p class="leave-sub">Where are you?</p>
+      ${draft.reply
+        ? `<p class="leave-sub">Connect to <b>${esc(draft.reply.author)}</b>'s trace at this place.</p>`
+        : `<p class="leave-sub">Where are you?</p>`}
       <div class="card step-card">
         <div class="step-loc-buttons">
           <button class="btn btn-primary" id="l-locate">◎ Use my location</button>
@@ -58,7 +66,7 @@ const Leave = (() => {
         <div class="loc-readout">📍 ${draft.place ? `Adding to <b>${esc(draft.place.name)}</b>` : esc(at)}</div>
         <div class="field" ${draft.place ? "hidden" : ""} id="l-name-field">
           <label>Name this place</label>
-          <input id="l-name" type="text" placeholder="e.g. Presidency University, Skandagiri…" value="${esc(presetName)}" />
+          <input id="l-name" type="text" placeholder="e.g. A College, a corner café, the mountain path…" value="${esc(presetName)}" />
         </div>
       </div>
       <div class="step-nav">
@@ -70,11 +78,13 @@ const Leave = (() => {
   // --------- STEP 2: WHAT ---------
   const step2Html = () => `
       <h1 class="leave-title">Leave a Trace</h1>
-      <p class="leave-sub">What do you want to leave?</p>
+      ${draft.reply
+        ? `<p class="leave-sub">What would you say to <b>${esc(draft.reply.author)}</b>?</p>`
+        : `<p class="leave-sub">What do you want to leave?</p>`}
       <div class="card step-card">
         <div class="field">
           <label>Your memory</label>
-          <textarea id="l-note" rows="5" placeholder="Write something for whoever finds this…">${esc(draft.note)}</textarea>
+          <textarea id="l-note" rows="5" placeholder="${draft.reply ? "Write what you'd say to them…" : "Write something for whoever finds this…"}">${esc(draft.note)}</textarea>
         </div>
         <div class="field">
           <label>Add a photo <span class="opt">(optional)</span></label>
@@ -113,17 +123,21 @@ const Leave = (() => {
   // --------- STEP 4: LEAVE ---------
   const step4Html = () => {
     const whenLabel = draft.unlockAt === "now" ? "as soon as you leave it" : `opens on ${Geo.fmtDate(draft.unlockAt)}`;
+    const replyRow = draft.reply
+      ? `<div class="review-row"><b>Connected to</b><span>${esc(draft.reply.author)}'s trace — "${esc((draft.reply.preview || "").slice(0, 60))}${(draft.reply.preview || "").length > 60 ? "…" : ""}"</span></div>`
+      : "";
     return `
       <h1 class="leave-title">Leave a Trace</h1>
       <p class="leave-sub">Almost there.</p>
       <div class="card step-card">
         <div class="review-row"><b>Place</b><span>${esc(draft.place ? draft.place.name : "unnamed spot")}</span></div>
+        ${replyRow}
         <div class="review-row"><b>Memory</b><span>${esc((draft.note || "").slice(0, 90))}${(draft.note || "").length > 90 ? "…" : ""}</span></div>
         <div class="review-row"><b>When</b><span>${whenLabel}</span></div>
       </div>
       <div class="step-nav">
         <button class="btn btn-ghost" id="l-back">← Back</button>
-        <button class="btn btn-primary" id="l-leave">Leave it behind</button>
+        <button class="btn btn-primary" id="l-leave">${draft.reply ? "Connect & leave it behind" : "Leave it behind"}</button>
       </div>`;
   };
 
@@ -236,7 +250,7 @@ const Leave = (() => {
       if (btn) { btn.disabled = true; btn.textContent = "Leaving it behind…"; }
       let photoUrl = null;
       if (draft.photo) photoUrl = await Data.uploadFile(draft.photo, "memories");
-      await Data.addMemory({
+      const mem = await Data.addMemory({
         placeId: draft.place.id,
         note: draft.note,
         lat: draft.lat != null ? draft.lat : draft.place.lat,
@@ -245,12 +259,17 @@ const Leave = (() => {
         unlockAt: draft.unlockAt === "now" ? new Date() : draft.unlockAt,
         photo: photoUrl
       });
+      if (draft.reply && draft.reply.id) {
+        try { await Data.addLink(mem.id, draft.reply.id); } catch (_) { /* trail link is best-effort */ }
+      }
       App.loadAll();
+      const connected = draft.reply ? `<p>Connected to <b>${esc(draft.reply.author)}</b>'s trace — two people, same moment.</p>` : "";
       document.getElementById("leave-body").innerHTML = `
         <div class="done card">
           <div class="stub-icon">🌊</div>
           <h1>It's out there now.</h1>
           <p>Someone may find it tomorrow.<br />Or years from now.</p>
+          ${connected}
           <div class="hero-actions">
             <button class="btn btn-primary" id="done-explore">Find it on the map</button>
             <button class="btn btn-ghost" id="done-leave">Leave another</button>

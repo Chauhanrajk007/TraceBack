@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="css/style.css?v=5" />
-  <link rel="stylesheet" href="css/home.css?v=5" />
+  <link rel="stylesheet" href="css/style.css?v=6" />
+  <link rel="stylesheet" href="css/home.css?v=6" />
 </head>
 <body>
   <header class="topbar">
@@ -102,10 +102,14 @@
             <div class="place-icon">🎓</div>
             <div class="place-name">College</div>
             <div class="place-who">A hundred students walked the same steps — and some of them wrote.</div>
+            <div class="college-spots">
+              <span>Library</span><span>Cafeteria</span><span>Classroom</span><span>Ground</span><span>Hostel</span><span>a favorite bench</span>
+            </div>
             <div class="college-line">
               <div class="cl-row"><span class="cl-year">2023</span><span class="cl-q">"First day here. Didn't know anyone."</span></div>
-              <div class="cl-row"><span class="cl-year">2025</span><span class="cl-q">"Graduating soon. Can't believe it's over."</span></div>
-              <div class="cl-row"><span class="cl-year">2026</span><span class="cl-q">"I'm reading this as a junior. It gets better."</span></div>
+              <div class="cl-row"><span class="cl-year">2024</span><span class="cl-q">"Finally found my people."</span></div>
+              <div class="cl-row"><span class="cl-year">2025</span><span class="cl-q">"Graduating soon. Can't believe it's already over."</span></div>
+              <div class="cl-row"><span class="cl-year">2026</span><span class="cl-q">"I'm reading this as a junior. I wonder what this place will be like when I graduate."</span></div>
             </div>
           </div>
           <div class="place-card ro">
@@ -124,24 +128,25 @@
         <div class="flow-steps">
           <div class="flow-step ro">
             <span class="f-num">01</span><div class="f-emoji">🗺️</div>
-            <b>Explore</b><p>Open the map and find a place with stories.</p>
+            <b>Explore</b><p>Open the map and find the places that hold traces.</p>
           </div>
           <div class="flow-arrow a1">→</div>
           <div class="flow-step ro">
-            <span class="f-num">02</span><div class="f-emoji">🔓</div>
-            <b>Discover</b><p>Walk close enough — and read who was here before you.</p>
+            <span class="f-num">02</span><div class="f-emoji">📍</div>
+            <b>Discover</b><p>Every trace stays locked until you're physically there — walk within ~100 m and it opens. Reveal who was here before you.</p>
           </div>
           <div class="flow-arrow a2">→</div>
           <div class="flow-step ro">
             <span class="f-num">03</span><div class="f-emoji">✍️</div>
-            <b>Leave</b><p>Write your own memory at this place, sealed until a chosen date.</p>
+            <b>Leave</b><p>Write your own memory where you stand, and seal it in time for whoever comes next.</p>
           </div>
           <div class="flow-arrow a3">→</div>
           <div class="flow-step ro">
             <span class="f-num">04</span><div class="f-emoji">🛤️</div>
-            <b>Continue</b><p>Someone else finds it later — and the story lives on.</p>
+            <b>Continue</b><p>Years later, someone walks the same ground and finds what you left. Your story lives on.</p>
           </div>
         </div>
+        <p class="flow-note ro">📌 Traces never unlock remotely. Your feet have to do the walking.</p>
       </section>
 
       <!-- MAIN IDEA -->
@@ -152,25 +157,29 @@
           <div class="idea-mems">
             <div class="mem-chip ro">
               <span class="m-yr">2024</span>
-              <p>"I came here to clear my head. Everybody seemed to know the answer but me."</p>
+              <p>"I came here because I needed some time alone."</p>
             </div>
             <div class="idea-link ro">→</div>
             <div class="mem-chip ro">
               <span class="m-yr">2026</span>
-              <p>"Well. This is strange. I came here for the same reason."</p>
+              <p>"That's exactly why I came here."</p>
             </div>
           </div>
           <p class="idea-tag ro">Same place. Same feeling. <b>Different time.</b></p>
+          <p class="idea-note ro">When you feel it too, you can leave your own trace and connect it to theirs — a quiet thread between two people years apart. No followers. No likes. Just recognition.</p>
         </div>
       </section>
 
       <!-- PLACES REMEMBER -->
       <section class="home-section" id="places-remember">
         <h2 class="hs-title ro">Places remember.</h2>
-        <p class="hs-sub ro">A university bell tower doesn't forget who rang under it.</p>
+        <p class="hs-sub ro">You aren't just seeing a place anymore — you're seeing the people who lived parts of their lives there before you.</p>
 
         <div class="univ ro">
-          <div class="univ-name">Presidency University</div>
+          <div class="univ-name">A College</div>
+          <div class="univ-spots">
+            <span>Library</span><span>Cafeteria</span><span>Classroom</span><span>Ground</span><span>Hostel</span><span>a favorite bench</span>
+          </div>
           <div class="univ-years">
             <span>2023</span><span>2024</span><span>2025</span><span>2026</span>
           </div>
@@ -179,19 +188,19 @@
         <div class="univ-tl">
           <div class="univ-mem ro">
             <span class="u-yr">2023</span>
-            <p>Joined. Knew no one. Left a note by the library bench.</p>
+            <p>"First day here. Didn't know anyone."</p>
           </div>
           <div class="univ-mem ro">
             <span class="u-yr">2024</span>
-            <p>Met the people I now call home. Same bench, new voices.</p>
+            <p>"Finally found my people."</p>
           </div>
           <div class="univ-mem ro">
             <span class="u-yr">2025</span>
-            <p>First year done. It went by way too fast.</p>
+            <p>"Graduating soon. Can't believe it's already over."</p>
           </div>
           <div class="univ-mem ro">
             <span class="u-yr">2026</span>
-            <p>I'm the senior everyone asks for advice now. I read the note again.</p>
+            <p>"I'm reading this as a junior. I wonder what this place will be like when I graduate."</p>
           </div>
         </div>
 
@@ -199,14 +208,14 @@
           <div class="tn-img then ro">
             <div>
               <div><span class="tn-year">Then</span></div>
-              <div class="tn-cap">2023 · just a bench and a lot of grey sky</div>
+              <div class="tn-cap">2023 · This area used to be empty.</div>
             </div>
           </div>
           <div class="tn-arrow ro">➜</div>
           <div class="tn-img now ro">
             <div>
               <div><span class="tn-year">Now</span></div>
-              <div class="tn-cap">2026 · buses, banners, and one very old bench</div>
+              <div class="tn-cap">2026 · There's a building here now.</div>
             </div>
           </div>
         </div>
@@ -245,7 +254,7 @@
           <button class="btn btn-primary btn-xl" data-goto="explore">Explore the Map</button>
           <button class="btn btn-ghost btn-xl" data-goto="leave">Leave a Trace</button>
         </div>
-        <p class="fc-foot">Only people physically present at a place can read its sealed memories.<br />Everything stays until the day it's meant to be read.</p>
+        <p class="fc-foot">A trace stays sealed until its date opens — and even then, it only unlocks when you're physically at the spot, usually within 100 m.<br />Someone walked where you walk now. Leave something for whoever comes next.</p>
       </section>
 
     </div>
@@ -292,8 +301,13 @@
     </div>
     <div class="stub card">
       <div class="stub-icon">🛤️</div>
-      <h3>Connected stories are on the way</h3>
-      <p>When people keep answering each other at the same place, their memories form a trail. Soon you'll be able to follow one — find the people, stories, and then-and-now of a place.</p>
+      <h3>Follow someone through their life</h3>
+      <p>As a person moves on — <b>college → first workplace → a new city → a mountain</b> — each trace they leave can become part of their journey. Discover it one place at a time, the same way they lived it.</p>
+      <p>A trail may carry a clue: <em>"The next trace is somewhere I used to go when I needed to think."</em></p>
+      <p>Journeys are being woven together now. The traces themselves are already out there on the map.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" data-goto="explore">Explore the map</button>
+      </div>
     </div>
   </section>
 
@@ -357,15 +371,15 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js?v=4"></script>
-  <script src="js/geo.js?v=4"></script>
-  <script src="js/data.js?v=4"></script>
-  <script src="js/ui.js?v=4"></script>
-  <script src="js/explore.js?v=4"></script>
-  <script src="js/place.js?v=4"></script>
-  <script src="js/leave.js?v=4"></script>
-  <script src="js/traces.js?v=5"></script>
-  <script src="js/app.js?v=5"></script>
-  <script src="js/home.js?v=5"></script>
+  <script src="js/config.js?v=6"></script>
+  <script src="js/geo.js?v=6"></script>
+  <script src="js/data.js?v=6"></script>
+  <script src="js/ui.js?v=6"></script>
+  <script src="js/explore.js?v=6"></script>
+  <script src="js/place.js?v=6"></script>
+  <script src="js/leave.js?v=6"></script>
+  <script src="js/traces.js?v=6"></script>
+  <script src="js/app.js?v=6"></script>
+  <script src="js/home.js?v=6"></script>
 </body>
 </html>

@@ -87,11 +87,22 @@ const Explore = (() => {
     marker.bindTooltip(p.name, { direction: "top", offset: [0, -34], opacity: 0.95 });
 
     const yearRange = s.years[0] === s.years[1] ? `${s.years[0]}` : `${s.years[0]} → ${s.years[1]}`;
+    const R = CONFIG.UNLOCK_RADIUS_METERS || 100;
+    let lockLine;
+    if (currentLocation) {
+      const d = Geo.distanceMeters(p.lat, p.lng, currentLocation.lat, currentLocation.lng);
+      lockLine = d <= R
+        ? `<div class="pop-lock on">✨ You're here — their traces are open.</div>`
+        : `<div class="pop-lock">📍 Locked · ${Math.round(d)} m away — walk closer to open.</div>`;
+    } else {
+      lockLine = `<div class="pop-lock">🔒 Reach this spot to read their traces.</div>`;
+    }
     const popHtml = `
       <div class="pop">
         <div class="pop-title">${p.name}</div>
         <div class="pop-meta">${s.people} ${s.people === 1 ? "person" : "people"} left traces here</div>
         <div class="pop-meta">${yearRange}</div>
+        ${lockLine}
         <button class="btn btn-primary btn-sm" id="pop-open-${p.id}">See What They Left</button>
       </div>`;
     marker.bindPopup(popHtml, { maxWidth: 220 });

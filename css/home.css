@@ -319,7 +319,19 @@
 .cl-row .cl-q { font-size: 12.5px; color: var(--muted); line-height: 1.45; opacity: 0; transform: translateY(6px); transition: opacity 0.6s ease, transform 0.6s ease; }
 .place-card.revealing .cl-row .cl-q { opacity: 1; transform: none; }
 .place-card.revealing .cl-row:nth-child(2) .cl-q { transition-delay: 0.25s; }
-.place-card.revealing .cl-row:nth-child(3) .cl-q { transition-delay: 0.55s; }
+.place-card.revealing .cl-row:nth-child(3) .cl-q { transition-delay: 0.5s; }
+.place-card.revealing .cl-row:nth-child(4) .cl-q { transition-delay: 0.75s; }
+
+.college-spots, .univ-spots { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; }
+.college-spots span, .univ-spots span {
+  font-size: 10.5px;
+  color: var(--muted);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+.college-spots { margin-top: 2px; }
 
 /* ---------- CORE FLOW ---------- */
 .flow-steps {
@@ -361,6 +373,13 @@
 .flow-arrow.a1 { right: -26px; }
 .flow-arrow.a2 { right: -26px; }
 .flow-arrow.a3 { right: -26px; }
+.flow-note {
+  text-align: center;
+  color: var(--muted);
+  font-size: 13.5px;
+  margin-top: 26px;
+  font-weight: 500;
+}
 
 /* ---------- MAIN IDEA ---------- */
 .idea-wrap { max-width: 720px; margin: 0 auto; }
@@ -403,6 +422,14 @@
   color: var(--text);
 }
 .idea-tag b { color: var(--accent); }
+.idea-note {
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+  max-width: 520px;
+  margin: 14px auto 0;
+}
 
 /* ---------- PLACES REMEMBER ---------- */
 .univ {
