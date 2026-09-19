@@ -96,16 +96,17 @@ const App = (() => {
     }
   };
 
-  // homepage / CTA buttons: "Explore the Map" and "Leave a Trace"
+  // Use event delegation so ALL [data-goto] buttons work — even inside hidden sections
   const bindCtas = () => {
-    document.querySelectorAll("[data-goto]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const target = btn.dataset.goto;
-        if (target === "leave") startLeave({ fromHome: true });
-        else show("explore");
-      });
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-goto]");
+      if (!btn) return;
+      const target = btn.dataset.goto;
+      if (target === "leave") startLeave({ fromHome: true });
+      else show(target);
     });
   };
+
 
   const openPlace = (place) => Place.show(place);
 
@@ -291,9 +292,10 @@ const App = (() => {
       btn.addEventListener("click", () => {
         const user = Data.currentUser();
         if (!user) { UI.showToast("Sign in first to buy a plan.", true); return; }
-        if (!window.Razorpay) { UI.showToast("Payment gateway loading…try again.", true); return; }
+        if (!window.Razorpay) { UI.showToast("Payment gateway loading… try again in a moment.", true); return; }
         const amount = parseInt(btn.dataset.amount, 10);
-        const label = btn.dataset.label || btn.dataset.plan;
+        const plan = btn.dataset.plan;   // "explorer" | "legacy"
+        const label = btn.dataset.label || plan;
         const options = {
           key: CONFIG.RAZORPAY_KEY_ID,
           amount,
@@ -304,12 +306,13 @@ const App = (() => {
           prefill: { email: user.username },
           theme: { color: "#315efb" },
           handler: () => {
-            UI.showToast(`🎉 ${label} unlocked! Your storage has been upgraded.`);
+            Data.setPlan(plan);           // unlock storage limit locally
             UI.closeModal("modal-plans");
+            UI.showToast(`🎉 ${label} unlocked! Storage upgraded.`);
+            Traces.refresh();             // re-render dashboard with new storage bar
           }
         };
-        const rzp = new window.Razorpay(options);
-        rzp.open();
+        new window.Razorpay(options).open();
       });
     });
 

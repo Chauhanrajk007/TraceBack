@@ -349,15 +349,62 @@ const Data = (() => {
     return Array.from(map.values());
   };
 
-  // ---------- uploads ----------
+  // ---------- storage tracking ----------
+  const STORAGE_KEY = "rtc_storage_used_bytes";
+  // Plan limits in bytes  (free = 200 MB)
+  const STORAGE_LIMITS = { free: 200 * 1024 * 1024, explorer: 5 * 1024 * 1024 * 1024, legacy: 50 * 1024 * 1024 * 1024 };
+  const PLAN_KEY = "rtc_plan"; // "free" | "explorer" | "legacy"
+
+  const getStorageUsed = () => {
+    try { return parseInt(localStorage.getItem(STORAGE_KEY) || "0", 10); } catch { return 0; }
+  };
+
+  const getStorageLimit = () => {
+    const plan = localStorage.getItem(PLAN_KEY) || "free";
+    return STORAGE_LIMITS[plan] || STORAGE_LIMITS.free;
+  };
+
+  const getCurrentPlan = () => localStorage.getItem(PLAN_KEY) || "free";
+
+  const setPlan = (plan) => localStorage.setItem(PLAN_KEY, plan);
+
+  const addStorageUsed = (bytes) => {
+    try {
+      const cur = getStorageUsed();
+      localStorage.setItem(STORAGE_KEY, String(cur + bytes));
+    } catch (_) {}
+  };
+
+  const fmtBytes = (b) => {
+    if (b >= 1024 * 1024 * 1024) return (b / (1024 * 1024 * 1024)).toFixed(1) + " GB";
+    if (b >= 1024 * 1024) return (b / (1024 * 1024)).toFixed(1) + " MB";
+    if (b >= 1024) return (b / 1024).toFixed(0) + " KB";
+    return b + " B";
+  };
+
+  const checkStorageFor = (file) => {
+    const used = getStorageUsed();
+    const limit = getStorageLimit();
+    if (used + file.size > limit) {
+      return { ok: false, used, limit, needed: file.size };
+    }
+    return { ok: true, used, limit };
+  };
+
+  // ---------- uploads (with storage tracking) ----------
   const uploadFile = async (file, folder) => {
     if (supabaseClient) {
       try {
         const path = `${folder}/${uid()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
         const { data, error } = await supabaseClient.storage.from("capsule-media").upload(path, file, { upsert: false });
-        if (!error && data) return supabaseClient.storage.from("capsule-media").getPublicUrl(data.path).data.publicUrl;
+        if (!error && data) {
+          addStorageUsed(file.size);
+          return supabaseClient.storage.from("capsule-media").getPublicUrl(data.path).data.publicUrl;
+        }
       } catch (_) {}
     }
+    // local preview fallback
+    addStorageUsed(file.size);
     return new Promise((resolve) => {
       const reader = new FileReader();
       reader.onload = () => resolve(reader.result);
@@ -371,6 +418,7 @@ const Data = (() => {
     listPlaces, createPlace, findPlaceNear,
     listMemories, listMemoriesForPlace, addMemory,
     addLink, listLinks,
-    uploadFile
+    uploadFile,
+    getStorageUsed, getStorageLimit, getCurrentPlan, setPlan, fmtBytes, checkStorageFor
   };
 })();

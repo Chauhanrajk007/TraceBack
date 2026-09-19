@@ -235,8 +235,20 @@ const Leave = (() => {
     const btn = $("l-leave");
     try {
       if (btn) { btn.disabled = true; btn.textContent = "Saving…"; }
+
+      // Check storage before uploading photo
       let photoUrl = null;
-      if (draft.photo) photoUrl = await Data.uploadFile(draft.photo, "memories");
+      if (draft.photo) {
+        const check = Data.checkStorageFor(draft.photo);
+        if (!check.ok) {
+          btn.disabled = false;
+          btn.textContent = draft.reply ? "🤝 Connect these stories" : "Leave it here";
+          UI.openModal("modal-plans");
+          UI.showToast(`You need more storage (${Data.fmtBytes(check.limit - check.used)} left). Upgrade to continue uploading photos.`, true);
+          return;
+        }
+        photoUrl = await Data.uploadFile(draft.photo, "memories");
+      }
       const unlockAt = draft.durationYears >= 50
         ? new Date(Date.now() + 50 * 365 * 86400000)
         : new Date(Date.now() + draft.durationYears * 365 * 86400000);
