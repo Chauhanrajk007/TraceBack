@@ -75,8 +75,13 @@ const App = (() => {
     document.querySelectorAll(".nav-item").forEach((n) => {
       n.classList.toggle("active", n.dataset.view === view);
     });
+    document.querySelectorAll(".bnav-item").forEach((n) => {
+      n.classList.toggle("active", n.dataset.view === view);
+    });
     if (view === "explore") Explore.resize();
     if (view === "traces") Traces.refresh();
+    if (view === "leave") Leave.open();
+    window.scrollTo({ top: 0, behavior: "instant" });
   };
 
   // --------- data ---------
@@ -96,13 +101,18 @@ const App = (() => {
     }
   };
 
-  // Use event delegation so ALL [data-goto] buttons work — even inside hidden sections
+  // Use event delegation so ALL [data-goto] buttons work — even inside dynamically updated sections
   const bindCtas = () => {
     document.addEventListener("click", (e) => {
       const btn = e.target.closest("[data-goto]");
       if (!btn) return;
+      e.preventDefault();
       const target = btn.dataset.goto;
       if (target === "leave") startLeave({ fromHome: true });
+      else if (target === "plans") {
+        updatePlansModalUI();
+        UI.openModal("modal-plans");
+      }
       else show(target);
     });
   };
@@ -111,11 +121,6 @@ const App = (() => {
   const openPlace = (place) => Place.show(place);
 
   const startLeave = (preset) => {
-    if (!Data.currentUser()) {
-      pendingLeavePlace = preset || null;
-      openAuthModal();
-      return;
-    }
     Leave.open(preset);
   };
 
@@ -271,18 +276,24 @@ const App = (() => {
 
   // --------- nav / actions ---------
   const bindActions = () => {
-    document.querySelectorAll(".nav-item[data-view]").forEach((btn) => {
+    document.querySelectorAll(".nav-item[data-view], .bnav-item[data-view]").forEach((btn) => {
       btn.addEventListener("click", () => show(btn.dataset.view));
     });
-    $("brand").addEventListener("click", () => show("home"));
-    $("locate-btn").addEventListener("click", () => Explore.locateMe());
-    $("place-back").addEventListener("click", () => show("explore"));
+    const brand = $("brand");
+    if (brand) brand.addEventListener("click", () => show("home"));
+    const locateBtn = $("locate-btn");
+    if (locateBtn) locateBtn.addEventListener("click", () => Explore.locateMe());
+    const placeBack = $("place-back");
+    if (placeBack) placeBack.addEventListener("click", () => show("explore"));
 
-    // Drop capsule here — shown after GPS is set on the map
-    $("drop-capsule-btn").addEventListener("click", () => {
-      const loc = Explore.getLocation();
-      startLeave(loc ? { lat: loc.lat, lng: loc.lng } : {});
-    });
+    // Drop capsule here — always works from map
+    const dropBtn = $("drop-capsule-btn");
+    if (dropBtn) {
+      dropBtn.addEventListener("click", () => {
+        const loc = Explore.getLocation();
+        startLeave(loc ? { lat: loc.lat, lng: loc.lng } : {});
+      });
+    }
 
     // Plans modal UI updater
     const updatePlansModalUI = () => {
@@ -314,10 +325,14 @@ const App = (() => {
     };
 
     // Plans modal
-    $("plans-btn").addEventListener("click", () => {
+    const openPlans = () => {
       updatePlansModalUI();
       UI.openModal("modal-plans");
-    });
+    };
+    const plansBtn = $("plans-btn");
+    if (plansBtn) plansBtn.addEventListener("click", openPlans);
+    const bnavPlansBtn = $("bnav-plans-btn");
+    if (bnavPlansBtn) bnavPlansBtn.addEventListener("click", openPlans);
 
     // Razorpay payment buttons (one-time purchase)
     document.querySelectorAll(".razorpay-btn").forEach((btn) => {

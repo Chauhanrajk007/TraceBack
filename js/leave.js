@@ -276,10 +276,13 @@ const Leave = (() => {
             : `Sealed at <b>${esc(draft.place ? draft.place.name : "your spot")}</b>.<br>Unlocks around <b>${unlockYear}</b> — when someone stands within 100m.`}</p>
           <div class="done-actions">
             <button class="btn btn-primary" id="done-map">See it on the map</button>
+            <button class="btn btn-ghost" id="done-dash">View in Dashboard</button>
             <button class="btn btn-ghost" id="done-home">Back to home</button>
           </div>
         </div>`;
       $("done-map").addEventListener("click", () => App.show("explore"));
+      const doneDash = $("done-dash");
+      if (doneDash) doneDash.addEventListener("click", () => App.show("traces"));
       $("done-home").addEventListener("click", () => App.show("home"));
     } catch (e) {
       UI.showToast(e.message, true);

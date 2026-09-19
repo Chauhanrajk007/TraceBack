@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="css/style.css?v=15" />
-  <link rel="stylesheet" href="css/home.css?v=15" />
+  <link rel="stylesheet" href="css/style.css?v=17" />
+  <link rel="stylesheet" href="css/home.css?v=17" />
 </head>
 <body>
 
@@ -18,6 +18,7 @@
     <button class="brand" id="brand" title="Home">🧭 Leave a <b>Trace</b></button>
     <nav class="nav">
       <button class="nav-item" data-view="explore">Map</button>
+      <button class="nav-item" data-view="leave">Drop Capsule</button>
       <button class="nav-item" data-view="traces">Dashboard</button>
       <button class="nav-item" id="plans-btn">Plans</button>
     </nav>
@@ -63,6 +64,7 @@
         <p class="hero-sub ro">Drop a capsule where you stand. Someone will find it when they walk the same ground — months or years from now.</p>
         <div class="hero-actions ro">
           <button class="btn btn-primary btn-xl" data-goto="explore">Open the Map</button>
+          <button class="btn btn-ghost btn-xl" data-goto="leave">Drop a Capsule</button>
         </div>
       </div>
 
@@ -106,7 +108,10 @@
       <section class="final-cta ro">
         <h2>You were here.</h2>
         <p class="fc-sub">Leave something for whoever comes next.</p>
-        <button class="btn btn-primary btn-xl" data-goto="explore">Open the Map</button>
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-xl" data-goto="explore">Open the Map</button>
+          <button class="btn btn-ghost btn-xl" data-goto="leave">Drop a Capsule</button>
+        </div>
       </section>
     </div>
   </section>
@@ -117,7 +122,7 @@
     <div class="map-chip" id="map-chip" hidden></div>
 
     <div class="fab">
-      <button id="drop-capsule-btn" class="btn btn-primary fab-btn drop-btn" hidden>📍 Drop capsule here</button>
+      <button id="drop-capsule-btn" class="btn btn-primary fab-btn drop-btn">📍 Drop capsule here</button>
       <button id="locate-btn" class="btn btn-ghost fab-btn" title="Show my location">◎ My location</button>
       <button class="btn btn-ghost fab-btn" data-goto="traces" title="View your personal dashboard">📊 Dashboard</button>
     </div>
@@ -234,6 +239,26 @@
     </div>
   </div>
 
+  <!-- ======================= BOTTOM MOBILE NAV ======================= -->
+  <nav class="bottom-nav">
+    <button class="bnav-item active" data-view="explore" title="Map">
+      <span class="bnav-icon">🗺️</span>
+      <span class="bnav-label">Map</span>
+    </button>
+    <button class="bnav-item" data-view="leave" title="Drop Capsule">
+      <span class="bnav-icon">📍</span>
+      <span class="bnav-label">Drop</span>
+    </button>
+    <button class="bnav-item" data-view="traces" title="Dashboard">
+      <span class="bnav-icon">📊</span>
+      <span class="bnav-label">Dashboard</span>
+    </button>
+    <button class="bnav-item" id="bnav-plans-btn" title="Plans">
+      <span class="bnav-icon">💎</span>
+      <span class="bnav-label">Plans</span>
+    </button>
+  </nav>
+
   <div id="toast" class="toast" hidden></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -250,15 +275,15 @@
   </script>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js?v=16"></script>
-  <script src="js/geo.js?v=16"></script>
-  <script src="js/data.js?v=16"></script>
-  <script src="js/ui.js?v=16"></script>
-  <script src="js/explore.js?v=16"></script>
-  <script src="js/place.js?v=16"></script>
-  <script src="js/leave.js?v=16"></script>
-  <script src="js/traces.js?v=16"></script>
-  <script src="js/app.js?v=16"></script>
-  <script src="js/home.js?v=16"></script>
+  <script src="js/config.js?v=17"></script>
+  <script src="js/geo.js?v=17"></script>
+  <script src="js/data.js?v=17"></script>
+  <script src="js/ui.js?v=17"></script>
+  <script src="js/explore.js?v=17"></script>
+  <script src="js/place.js?v=17"></script>
+  <script src="js/leave.js?v=17"></script>
+  <script src="js/traces.js?v=17"></script>
+  <script src="js/app.js?v=17"></script>
+  <script src="js/home.js?v=17"></script>
 </body>
 </html>
