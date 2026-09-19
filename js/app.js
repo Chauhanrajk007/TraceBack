@@ -416,7 +416,7 @@ const App = (() => {
           currency: "INR",
           name: "Traceback",
           description: label,
-          image: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>",
+          image: "assets/logo.png",
           prefill: { email: user.username },
           theme: { color: "#315efb" },
           handler: () => {
