@@ -5,6 +5,7 @@ const UI = (() => {
     const el = document.getElementById("toast");
     el.textContent = message;
     el.classList.toggle("err", isError);
+    el.classList.toggle("loading", sticky);
     el.hidden = false;
     clearTimeout(toastTimer);
     if (!sticky) {
@@ -15,7 +16,10 @@ const UI = (() => {
   const hideToast = () => {
     clearTimeout(toastTimer);
     const el = document.getElementById("toast");
-    if (el) el.hidden = true;
+    if (el) {
+      el.classList.remove("loading");
+      el.hidden = true;
+    }
   };
 
   const openModal = (id) => {

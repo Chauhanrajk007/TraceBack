@@ -134,7 +134,10 @@ const Deposit = (() => {
 
   const useLocationPin = async () => {
     const btn = document.getElementById("d-use-location");
-    if (btn) btn.disabled = true;
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = "Finding your location…";
+    }
     UI.showToast("Finding your location…", false, true);
     try {
       const loc = await Geo.getCurrentPosition();
@@ -147,7 +150,10 @@ const Deposit = (() => {
       UI.hideToast();
       UI.showToast(e.message, true);
     } finally {
-      if (btn) btn.disabled = false;
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = "📍 Use my location";
+      }
     }
   };
 

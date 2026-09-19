@@ -139,7 +139,10 @@ const Explore = (() => {
     if (locating) return;
     locating = true;
     const btn = document.getElementById("locate-btn");
-    if (btn) btn.disabled = true;
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = "Finding your location…";
+    }
     UI.showToast("Finding your location… this can take a few seconds", false, true);
     try {
       const loc = await Geo.getCurrentPosition();
@@ -151,7 +154,10 @@ const Explore = (() => {
       UI.showToast(e.message, true);
     } finally {
       locating = false;
-      if (btn) btn.disabled = false;
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = "◎ My location";
+      }
     }
   };
 

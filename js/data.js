@@ -12,12 +12,17 @@ const Data = (() => {
     const { createClient } = window.supabase;
     if (!createClient) throw new Error("Supabase JS library failed to load (check network).");
     supabaseClient = createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
-    const { data } = await supabaseClient.auth.getSession();
-    cachedSession = (data && data.session) || null;
     // keep the session in sync after login/logout/token refresh
     supabaseClient.auth.onAuthStateChange((_event, session) => {
       cachedSession = session;
     });
+    // Don't let a slow network block the whole app — restore session if one exists.
+    try {
+      const { data } = await supabaseClient.auth.getSession();
+      cachedSession = (data && data.session) || null;
+    } catch {
+      cachedSession = null;
+    }
   };
 
   const currentUser = () =>
@@ -76,6 +81,7 @@ const Data = (() => {
     if (m.includes("already registered")) return "That email is already registered. Try signing in.";
     if (m.includes("rate limit")) return "Too many attempts — wait a moment and try again.";
     if (m.includes("security key")) return "Security keys are not supported here — use email + password.";
+    if (m.includes("fetch") || m.includes("network") || m.includes("connection")) return "Can't reach the server — check your internet connection and try again.";
     return msg || "Something went wrong.";
   };
 
@@ -90,6 +96,14 @@ const Data = (() => {
     await supabaseClient.auth.signOut();
   };
 
+  const apiMessage = (msg) => {
+    const m = String(msg || "").toLowerCase();
+    if (m.includes("fetch") || m.includes("network") || m.includes("connection")) {
+      return "Can't reach the server — check your internet connection.";
+    }
+    return msg || "Something went wrong.";
+  };
+
   const addCapsule = async (payload) => {
     const row = {
       lat: payload.lat,
@@ -102,13 +116,13 @@ const Data = (() => {
       author_id: payload.authorId
     };
     const { data, error } = await supabaseClient.from("capsules").insert(row).select().single();
-    if (error) throw new Error(error.message);
+    if (error) throw new Error(apiMessage(error.message));
     return data;
   };
 
   const listCapsules = async () => {
     const { data, error } = await supabaseClient.from("capsules").select("*").order("created_at", { ascending: false });
-    if (error) throw new Error(error.message);
+    if (error) throw new Error(apiMessage(error.message));
     return data || [];
   };
 

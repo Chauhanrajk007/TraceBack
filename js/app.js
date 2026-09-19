@@ -190,7 +190,11 @@ const App = (() => {
       const caps = await Data.listCapsules();
       await Explore.refreshCapsules(caps);
     } catch (e) {
-      UI.showToast(e.message, true);
+      const toast = document.getElementById("toast");
+      // don't clobber an active sticky toast (e.g. "Finding your location…")
+      if (toast && !toast.classList.contains("loading")) {
+        UI.showToast(e.message, true);
+      }
     }
   };
 
