@@ -5,6 +5,7 @@ const Leave = (() => {
       "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
     }[c]));
   let step = 1;
+  const DRAFT_KEY = "rtc_leave_draft";
   let draft = {
     place: null,      // {id, name, lat, lng}
     lat: null,
@@ -16,20 +17,38 @@ const Leave = (() => {
     reply: null       // {id, author, preview} — memory being connected to
   };
 
+  const saveDraft = () => {
+    try {
+      const { photo, photoUrl, ...rest } = draft;
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(rest));
+    } catch (_) {}
+  };
+
   const open = (preset) => {
     step = 1;
+    let saved = null;
+    try {
+      saved = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null");
+    } catch (_) {}
+    const base = saved || {};
     draft = {
-      place: (preset && preset.place) || null,
-      lat: (preset && preset.place) ? preset.place.lat : null,
-      lng: (preset && preset.place) ? preset.place.lng : null,
-      note: "",
+      place: base.place || null,
+      lat: base.lat != null ? base.lat : null,
+      lng: base.lng != null ? base.lng : null,
+      note: base.note || "",
       photo: null,
       photoUrl: null,
-      unlockAt: "now",
-      reply: (preset && preset.reply) || null
+      unlockAt: base.unlockAt || "now",
+      reply: base.reply || null
     };
+    if (preset && (preset.place || preset.reply)) {
+      if (preset.place) { draft.place = preset.place; draft.lat = preset.place.lat; draft.lng = preset.place.lng; }
+      if (preset.reply) draft.reply = preset.reply;
+      localStorage.removeItem(DRAFT_KEY);
+    }
     App.show("leave");
     render();
+    saveDraft();
   };
 
   const render = () => {
@@ -47,6 +66,7 @@ const Leave = (() => {
 
     body.innerHTML = html;
     bind();
+    saveDraft();
   };
 
   // --------- STEP 1: WHERE ---------
@@ -263,6 +283,7 @@ const Leave = (() => {
         try { await Data.addLink(mem.id, draft.reply.id); } catch (_) { /* trail link is best-effort */ }
       }
       App.loadAll();
+      localStorage.removeItem(DRAFT_KEY);
       const connected = draft.reply ? `<p>Connected to <b>${esc(draft.reply.author)}</b>'s trace — two people, same moment.</p>` : "";
       document.getElementById("leave-body").innerHTML = `
         <div class="done card">

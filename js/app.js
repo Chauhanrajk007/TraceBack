@@ -4,8 +4,22 @@ const App = (() => {
 
   const showSetupBanner = (msg) => {
     const b = $("setup-banner");
+    if (!b) return;
     b.hidden = false;
-    b.innerHTML = `⚠️ ${msg}`;
+    b.innerHTML = `⚠️ ${msg} <button class="btn btn-ghost btn-sm" id="setup-retry">↻ Retry</button>`;
+    const r = $("setup-retry");
+    if (r) r.addEventListener("click", async () => {
+      b.innerHTML = "⚠️ Retrying…";
+      try {
+        await Data.init();
+        UI.setAuthLabel();
+        if (window.__rtcInitMap) window.__rtcInitMap();
+        await loadAll();
+        b.hidden = true;
+      } catch (e) {
+        showSetupBanner((e && e.message) || String(e));
+      }
+    });
   };
 
   const init = async () => {
