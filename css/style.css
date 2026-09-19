@@ -47,27 +47,33 @@ button { font-family: inherit; }
 }
 
 .brand {
-  font-size: 19px;
+  font-size: 18px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
   background: none;
   border: none;
   color: var(--text);
   cursor: pointer;
-  padding: 0;
+  padding: 4px 0;
+  line-height: 1;
+  vertical-align: middle;
 }
-.brand .logo {
-  width: 30px; height: 30px;
-  border-radius: 9px;
-  background: var(--accent);
-  color: #fff;
+.brand .brand-icon {
+  font-size: 18px;
+  line-height: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
+  transform: translateY(-0.5px);
+}
+.brand .brand-text {
+  display: inline-flex;
+  align-items: center;
+  font-size: 18px;
+  line-height: 1;
 }
 .brand b { color: var(--accent); font-weight: 700; }
 
