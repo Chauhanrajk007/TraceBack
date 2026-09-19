@@ -84,11 +84,14 @@ insert into storage.buckets (id, name, public)
 values ('capsule-media', 'capsule-media', true)
 on conflict (id) do update set public = true;
 
+drop policy if exists "capsule_media_insert" on storage.objects;
 create policy "capsule_media_insert" on storage.objects
   for insert with check (bucket_id = 'capsule-media' and auth.uid() is not null);
 
+drop policy if exists "capsule_media_delete" on storage.objects;
 create policy "capsule_media_delete" on storage.objects
   for delete using (bucket_id = 'capsule-media' and auth.uid() = owner);
 
+drop policy if exists "capsule_media_select" on storage.objects;
 create policy "capsule_media_select" on storage.objects
   for select using (bucket_id = 'capsule-media');
