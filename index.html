@@ -12,6 +12,16 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="css/style.css?v=23" />
   <link rel="stylesheet" href="css/home.css?v=23" />
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem("tb_theme");
+        var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        var theme = saved || (prefersDark ? "dark" : "light");
+        document.documentElement.setAttribute("data-theme", theme);
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
 
@@ -27,6 +37,10 @@
       <button class="nav-item" id="plans-btn">Plans</button>
     </nav>
     <div class="topbar-right">
+      <button id="theme-toggle" class="theme-toggle" title="Switch Theme (Light / Dark)" aria-label="Toggle dark mode">
+        <span class="theme-icon light-icon" aria-hidden="true">🌙</span>
+        <span class="theme-icon dark-icon" aria-hidden="true">☀️</span>
+      </button>
       <span id="auth-label" class="auth-label" hidden></span>
       <button id="auth-btn" class="btn btn-ghost">Sign in</button>
     </div>
@@ -288,15 +302,15 @@
   </script>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js?v=22"></script>
-  <script src="js/geo.js?v=22"></script>
-  <script src="js/data.js?v=22"></script>
-  <script src="js/ui.js?v=22"></script>
-  <script src="js/explore.js?v=22"></script>
-  <script src="js/place.js?v=22"></script>
-  <script src="js/leave.js?v=22"></script>
-  <script src="js/traces.js?v=22"></script>
-  <script src="js/app.js?v=22"></script>
-  <script src="js/home.js?v=22"></script>
+  <script src="js/config.js?v=23"></script>
+  <script src="js/geo.js?v=23"></script>
+  <script src="js/data.js?v=23"></script>
+  <script src="js/ui.js?v=23"></script>
+  <script src="js/explore.js?v=23"></script>
+  <script src="js/place.js?v=23"></script>
+  <script src="js/leave.js?v=23"></script>
+  <script src="js/traces.js?v=23"></script>
+  <script src="js/app.js?v=23"></script>
+  <script src="js/home.js?v=23"></script>
 </body>
 </html>

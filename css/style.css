@@ -15,6 +15,22 @@
   --radius: 12px;
 }
 
+[data-theme="dark"] {
+  --bg: #090d16;
+  --surface: #121826;
+  --surface-2: #1a2236;
+  --line: #222d45;
+  --text: #f0f4fc;
+  --muted: #8b99b5;
+  --accent: #4872ff;
+  --accent-soft: rgba(72, 114, 255, 0.18);
+  --ok: #22c55e;
+  --ok-soft: rgba(34, 197, 94, 0.18);
+  --gold: #f59e0b;
+  --gold-soft: rgba(245, 158, 11, 0.18);
+  --danger: #f43f5e;
+}
+
 * { box-sizing: border-box; }
 
 html, body { height: 100%; }
@@ -97,8 +113,34 @@ button { font-family: inherit; }
 .nav-item:hover { background: var(--surface-2); color: var(--text); }
 .nav-item.active { background: var(--accent-soft); color: var(--accent); }
 
-.topbar-right { display: flex; align-items: center; gap: 12px; }
+.topbar-right { display: flex; align-items: center; gap: 10px; }
 .auth-label { color: var(--muted); font-size: 13px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.theme-toggle {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  color: var(--text);
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+  padding: 0;
+}
+.theme-toggle:hover {
+  background: var(--line);
+  transform: translateY(-1px);
+}
+.theme-toggle .dark-icon { display: none; }
+.theme-toggle .light-icon { display: inline-block; }
+
+[data-theme="dark"] .theme-toggle .dark-icon { display: inline-block; }
+[data-theme="dark"] .theme-toggle .light-icon { display: none; }
 
 /* ---------- views ---------- */
 .view { display: none; }
@@ -662,7 +704,7 @@ textarea { resize: vertical; min-height: 130px; }
     left: 0;
     right: 0;
     height: 62px;
-    background: rgba(255, 255, 255, 0.96);
+    background: var(--surface);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border-top: 1px solid var(--line);
@@ -670,7 +712,7 @@ textarea { resize: vertical; min-height: 130px; }
     justify-content: space-around;
     align-items: center;
     padding: 0 8px;
-    box-shadow: 0 -4px 20px rgba(15, 25, 50, 0.08);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
   }
   .bnav-item {
     background: none;
@@ -1142,4 +1184,105 @@ textarea { resize: vertical; min-height: 130px; }
   .tn-arrow { transform: rotate(90deg); }
   .ct-cards { grid-template-columns: 1fr; }
   .ct-line { width: 16px; height: 2px; }
+}
+
+/* ============================================================
+   DARK MODE ENHANCEMENTS
+   ============================================================ */
+[data-theme="dark"] .topbar {
+  background: rgba(18, 24, 38, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+[data-theme="dark"] .map .leaflet-tile-pane {
+  filter: brightness(0.72) invert(1) contrast(2.8) hue-rotate(200deg) saturate(0.35);
+}
+[data-theme="dark"] .map .leaflet-container {
+  background: #090d16;
+}
+
+[data-theme="dark"] .leaflet-popup-content-wrapper,
+[data-theme="dark"] .leaflet-popup-tip {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+}
+[data-theme="dark"] .leaflet-container a.leaflet-popup-close-button {
+  color: var(--muted);
+}
+[data-theme="dark"] .leaflet-bar a {
+  background-color: var(--surface);
+  color: var(--text);
+  border-bottom-color: var(--line);
+}
+[data-theme="dark"] .leaflet-bar a:hover {
+  background-color: var(--surface-2);
+}
+
+[data-theme="dark"] .map-chip,
+[data-theme="dark"] .legend {
+  background: rgba(18, 24, 38, 0.92);
+  border-color: var(--line);
+  color: var(--text);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .modal {
+  background: rgba(4, 7, 15, 0.75);
+}
+
+[data-theme="dark"] .field input:focus,
+[data-theme="dark"] .field textarea:focus,
+[data-theme="dark"] .auth-form input:focus {
+  background: var(--surface);
+  color: var(--text);
+}
+
+[data-theme="dark"] .prox-banner.away {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.35);
+}
+[data-theme="dark"] .prox-banner.here {
+  background: rgba(34, 197, 94, 0.12);
+  border-color: rgba(34, 197, 94, 0.35);
+}
+
+[data-theme="dark"] .dash-user-bar.is-guest {
+  border-color: rgba(245, 158, 11, 0.35);
+  background: rgba(245, 158, 11, 0.1);
+}
+
+[data-theme="dark"] .plan-legacy {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.12), var(--surface));
+}
+[data-theme="dark"] .plan-explorer {
+  background: linear-gradient(135deg, rgba(72, 114, 255, 0.12), var(--surface));
+}
+
+[data-theme="dark"] .uc-row-new {
+  background: var(--surface-2);
+  border-color: rgba(72, 114, 255, 0.35);
+}
+
+[data-theme="dark"] .ct-entry.highlight,
+[data-theme="dark"] .ct-card.highlight {
+  background: rgba(72, 114, 255, 0.12);
+  border-color: rgba(72, 114, 255, 0.35);
+}
+
+[data-theme="dark"] .j-clue {
+  background: rgba(245, 158, 11, 0.12);
+  color: #ffd666;
+}
+
+[data-theme="dark"] .home-section.alt {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+}
+
+[data-theme="dark"] .toast {
+  background: rgba(18, 24, 38, 0.96);
+  color: #f0f4fc;
+  border: 1px solid var(--line);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }

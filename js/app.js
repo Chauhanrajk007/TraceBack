@@ -286,6 +286,19 @@ const App = (() => {
     });
     const brand = $("brand");
     if (brand) brand.addEventListener("click", () => show("home"));
+
+    // Theme toggle (light / dark)
+    const themeToggle = $("theme-toggle");
+    if (themeToggle) {
+      themeToggle.addEventListener("click", () => {
+        const current = document.documentElement.getAttribute("data-theme") || "light";
+        const next = current === "dark" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", next);
+        try { localStorage.setItem("tb_theme", next); } catch (e) {}
+        UI.showToast(next === "dark" ? "🌙 Dark mode activated" : "☀️ Light mode activated");
+      });
+    }
+
     const locateBtn = $("locate-btn");
     if (locateBtn) locateBtn.addEventListener("click", () => Explore.locateMe());
     const placeBack = $("place-back");
