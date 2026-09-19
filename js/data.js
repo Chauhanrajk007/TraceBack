@@ -22,7 +22,7 @@ const Data = (() => {
   const currentUser = () =>
     cachedSession ? { id: cachedSession.user.id, username: cachedSession.user.email } : null;
 
-  const register = async (username, password) => {
+const register = async (username, password) => {
     const email = username.includes("@") ? username : `${username}@timebottle.local`;
     const { data, error } = await supabaseClient.auth.signUp({
       email,
@@ -32,17 +32,37 @@ const Data = (() => {
         emailRedirectTo: window.location.origin
       }
     });
-    if (error) throw new Error(error.message);
-    // email confirmation on? then there's no session yet, profile is created
-    // by the on_auth_user_created trigger after the user confirms.
+    if (error) throw new Error(authMessage(error.message));
     const needsConfirmation = !data.session;
+    if (!needsConfirmation) await ensureProfile(data.user.id, username, email);
     return { id: data.user.id, username: email, needsConfirmation };
+  };
+
+  const ensureProfile = async (id, username, email) => {
+    const { error } = await supabaseClient
+      .from("profiles")
+      .upsert({ id, username }, { onConflict: "id" })
+      .select()
+      .maybeSingle();
+    if (error && !/already exists|duplicate/i.test(error.message)) {
+      console.warn("profile upsert skipped:", error.message);
+    }
+  };
+
+  const authMessage = (msg) => {
+    const m = String(msg || "").toLowerCase();
+    if (m.includes("email not confirmed")) return "Check your email and confirm your account first, then sign in.";
+    if (m.includes("invalid login credentials")) return "Wrong email or password.";
+    if (m.includes("already registered")) return "That email is already registered. Try signing in.";
+    if (m.includes("rate limit")) return "Too many attempts — wait a moment and try again.";
+    if (m.includes("security key")) return "Security keys are not supported here — use email + password.";
+    return msg || "Something went wrong.";
   };
 
   const login = async (username, password) => {
     const email = username.includes("@") ? username : `${username}@timebottle.local`;
     const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-    if (error) throw new Error("Wrong username or password");
+    if (error) throw new Error(authMessage(error.message));
     return { id: data.user.id, username: email };
   };
 

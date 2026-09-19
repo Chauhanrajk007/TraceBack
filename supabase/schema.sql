@@ -1,5 +1,9 @@
--- TimeBottle · run this once in the Supabase SQL Editor
+-- TimeBottle · run this ONCE in the Supabase SQL Editor
 -- https://supabase.com/dashboard → your project → SQL Editor
+--
+-- Optional: for instant sign-in (no email confirmation step),
+-- go to Authentication → Providers → Email → turn OFF "Confirm email".
+-- Sign-ups will then log you in immediately.
 
 -- 1) profiles table (display names, one row per auth user)
 create table if not exists public.profiles (

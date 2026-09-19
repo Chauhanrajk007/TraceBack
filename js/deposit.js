@@ -56,9 +56,13 @@ const Deposit = (() => {
       </div>
       <div class="field">
         <label>Opens on</label>
-        <input id="d-date" type="date" min="${todayPlus(1)}" />
+        <div class="date-row">
+          <input id="d-date" type="date" min="${todayPlus(1)}" />
+          <span class="date-preview" id="d-date-label">pick a date</span>
+        </div>
         <div class="chips">
           <span class="chip" data-days="30">+1 month</span>
+          <span class="chip" data-days="182">+6 months</span>
           <span class="chip" data-days="365">+1 year</span>
           <span class="chip" data-days="1825">+5 years</span>
         </div>
@@ -100,11 +104,27 @@ const Deposit = (() => {
       } else holder.hidden = true;
     });
 
+    const setDateLabel = () => {
+      const input = document.getElementById("d-date");
+      const label = document.getElementById("d-date-label");
+      const v = input.value;
+      if (!v) {
+        label.textContent = "pick a date";
+        label.classList.remove("picked");
+        return;
+      }
+      label.textContent = new Date(v + "T12:00:00").toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "long", year: "numeric" });
+      label.classList.add("picked");
+    };
+
+    document.getElementById("d-date").addEventListener("change", setDateLabel);
+
     document.querySelectorAll(".chip").forEach((chip) =>
       chip.addEventListener("click", () => {
         document.getElementById("d-date").value = todayPlus(Number(chip.dataset.days));
         document.querySelectorAll(".chip").forEach((c) => c.classList.remove("active"));
         chip.classList.add("active");
+        setDateLabel();
       })
     );
 
