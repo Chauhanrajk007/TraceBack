@@ -30,8 +30,8 @@ const App = (() => {
     bindAuth();
     bindActions();
     bindCtas();
-    show("home");
-    Home.init();
+    show("explore"); // Start on the map — that's the heart of the app
+    Home.init();     // Prepare home animations in background
 
     try {
       await Data.init();
@@ -260,12 +260,49 @@ const App = (() => {
 
   // --------- nav / actions ---------
   const bindActions = () => {
-    document.querySelectorAll(".nav-item").forEach((btn) => {
+    document.querySelectorAll(".nav-item[data-view]").forEach((btn) => {
       btn.addEventListener("click", () => show(btn.dataset.view));
     });
     $("brand").addEventListener("click", () => show("home"));
     $("locate-btn").addEventListener("click", () => Explore.locateMe());
     $("place-back").addEventListener("click", () => show("explore"));
+
+    // Drop capsule here — shown after GPS is set on the map
+    $("drop-capsule-btn").addEventListener("click", () => {
+      const loc = Explore.getLocation();
+      startLeave(loc ? { lat: loc.lat, lng: loc.lng } : {});
+    });
+
+    // Plans modal
+    $("plans-btn").addEventListener("click", () => UI.openModal("modal-plans"));
+
+    // Razorpay payment buttons
+    document.querySelectorAll(".razorpay-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const user = Data.currentUser();
+        if (!user) { UI.showToast("Sign in first to upgrade your plan.", true); return; }
+        const amount = parseInt(btn.dataset.amount, 10);
+        const plan = btn.dataset.plan;
+        if (!window.Razorpay) { UI.showToast("Payment gateway loading…", true); return; }
+        const options = {
+          key: "rzp_test_REPLACE_WITH_YOUR_KEY", // ← put your Razorpay key here
+          amount,
+          currency: "INR",
+          name: "Leave a Trace",
+          description: plan === "explorer" ? "Explorer Plan — ₹99/month" : "Legacy Plan — ₹299/month",
+          image: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>",
+          prefill: { email: user.username },
+          theme: { color: "#315efb" },
+          handler: () => {
+            UI.showToast(`🎉 Welcome to ${plan === "explorer" ? "Explorer" : "Legacy"} plan!`);
+            UI.closeModal("modal-plans");
+          }
+        };
+        const rzp = new window.Razorpay(options);
+        rzp.open();
+      });
+    });
+
     $("auth-btn").addEventListener("click", async () => {
       const user = Data.currentUser();
       if (user) {
@@ -273,7 +310,7 @@ const App = (() => {
         UI.setAuthLabel();
         UI.showToast("Signed out");
         loadAll();
-        show("home");
+        show("explore");
       } else {
         openAuthModal();
       }

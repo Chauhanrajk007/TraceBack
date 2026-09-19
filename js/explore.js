@@ -162,6 +162,9 @@ const Explore = (() => {
       interactive: false
     }).addTo(map);
     if (fly) map.flyTo([loc.lat, loc.lng], Math.max(map.getZoom(), 15), { duration: 1.2 });
+    // Show the "Drop capsule here" button now that we know where the user is
+    const dropBtn = document.getElementById("drop-capsule-btn");
+    if (dropBtn) dropBtn.hidden = false;
   };
 
   const locateMe = async (opts = {}) => {

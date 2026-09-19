@@ -9,20 +9,18 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="css/style.css?v=9" />
-  <link rel="stylesheet" href="css/home.css?v=9" />
+  <link rel="stylesheet" href="css/style.css?v=12" />
+  <link rel="stylesheet" href="css/home.css?v=12" />
 </head>
 <body>
+
   <header class="topbar">
     <button class="brand" id="brand" title="Home">🧭 Leave a <b>Trace</b></button>
-
     <nav class="nav">
-      <button class="nav-item" data-view="explore">Explore</button>
-      <button class="nav-item" data-view="leave">Leave</button>
-      <button class="nav-item" data-view="trails">Trails</button>
+      <button class="nav-item" data-view="explore">Map</button>
       <button class="nav-item" data-view="traces">My Traces</button>
+      <button class="nav-item" id="plans-btn">Plans</button>
     </nav>
-
     <div class="topbar-right">
       <span id="auth-label" class="auth-label" hidden></span>
       <button id="auth-btn" class="btn btn-ghost">Sign in</button>
@@ -34,12 +32,10 @@
   <!-- ======================== OPENING ======================== -->
   <div id="opening" class="opening" aria-hidden="true">
     <button id="o-skip" type="button">Skip →</button>
-
     <div class="o-world">
       <div class="o-grid"></div>
       <div class="o-point"></div>
       <div class="o-ring"></div>
-
       <div class="o-place o-mountain">
         <div class="o-pin"></div>
         <span class="o-lab">Mountain</span>
@@ -55,13 +51,7 @@
         <span class="o-lab">Café</span>
         <div class="o-yrs"><span>2024</span><span>2025</span><span>2026</span></div>
       </div>
-      <div class="o-place o-street">
-        <div class="o-pin"></div>
-        <span class="o-lab">Workspace</span>
-        <div class="o-yrs"><span>2024</span><span>2025</span><span>2026</span></div>
-      </div>
     </div>
-
     <div class="o-copy">
       <p class="o-line-1">Someone was here before you.</p>
       <p class="o-caption">People come and go. Places remain.<br />Their stories can <b>stay behind</b>.</p>
@@ -71,175 +61,78 @@
   <!-- ============================= HOME ============================= -->
   <section class="view home-view" data-view="home">
     <div class="home-inner">
-
-      <!-- HERO -->
       <div class="home-hero">
         <p class="eyebrow ro">Leave a Trace</p>
         <h1 class="ro">Someone was<br /><span>here before you.</span></h1>
-        <p class="hero-sub ro">Discover the people, memories, and stories hidden in the places around you.</p>
+        <p class="hero-sub ro">Drop a capsule where you stand. Someone will find it when they walk the same ground — months or years from now.</p>
         <div class="hero-actions ro">
-          <button class="btn btn-primary btn-xl" data-goto="explore">Explore the Map</button>
-          <button class="btn btn-ghost btn-xl" data-goto="leave">Leave a Trace</button>
+          <button class="btn btn-primary btn-xl" data-goto="explore">Open the Map</button>
         </div>
-        <div class="scroll-hint ro">↓</div>
       </div>
 
-      <!-- QUICK CONCEPT -->
       <section class="home-section" id="concept">
-        <h2 class="hs-title ro">A mountain. A college. A café.</h2>
-        <p class="hs-sub ro">Different people. Different years. Same place.</p>
-
-        <div class="concept-places">
-          <div class="place-card ro">
-            <div class="place-icon">⛰️</div>
-            <div class="place-name">Mountain</div>
-            <div class="place-who">People came here alone, at sunrise, and left a word behind.</div>
-          </div>
-          <div class="place-card place-college ro">
-            <div class="place-icon">🎓</div>
-            <div class="place-name">A College</div>
-            <div class="place-who">A hundred students walked the same steps — and some of them wrote.</div>
-            <div class="college-spots">
-              <span>Library</span><span>Cafeteria</span><span>Classroom</span><span>Ground</span><span>Hostel</span><span>A favorite bench</span>
-            </div>
-            <div class="college-line">
-              <div class="cl-row"><span class="cl-year">2023</span><span class="cl-q">"First day here. Didn't know anyone."</span></div>
-              <div class="cl-row"><span class="cl-year">2024</span><span class="cl-q">"Finally found my people."</span></div>
-              <div class="cl-row"><span class="cl-year">2025</span><span class="cl-q">"Graduating soon. Can't believe it's already over."</span></div>
-              <div class="cl-row"><span class="cl-year">2026</span><span class="cl-q">"I'm reading this as a junior. I wonder what this place will be like when I graduate."</span></div>
+        <h2 class="hs-title ro">Two ways people use it</h2>
+        <div class="use-cases">
+          <div class="use-card ro">
+            <div class="uc-icon">⛰️</div>
+            <div class="uc-label">The Mountain</div>
+            <div class="uc-story">
+              <div class="uc-row"><span class="uc-yr">2024</span><span class="uc-q">"Came here alone. Stayed until sunrise."</span></div>
+              <div class="uc-arrow">↓ 5 years later</div>
+              <div class="uc-row"><span class="uc-yr">2029</span><span class="uc-q">"Found this. I came alone too. Now I feel less strange about it."</span></div>
             </div>
           </div>
-          <div class="place-card ro">
-            <div class="place-icon">☕</div>
-            <div class="place-name">Café</div>
-            <div class="place-who">Conversations that ended years ago, preserved at the same table.</div>
+          <div class="use-card ro">
+            <div class="uc-icon">🎓</div>
+            <div class="uc-label">The College</div>
+            <div class="uc-story">
+              <div class="uc-row"><span class="uc-yr">2023</span><span class="uc-q">"First day. Didn't know anyone."</span></div>
+              <div class="uc-arrow">↓ when they graduate</div>
+              <div class="uc-row"><span class="uc-yr">2027</span><span class="uc-q">"Reading this now. Feels like yesterday. You'll make it."</span></div>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- CORE FLOW -->
       <section class="home-section" id="flow">
         <h2 class="hs-title ro">How it works</h2>
-        <p class="hs-sub ro">Four simple steps. No followers. No feeds. Just physical discovery.</p>
-
-        <div class="flow-steps">
-          <div class="flow-step ro">
-            <span class="f-num">01</span><div class="f-emoji">🗺️</div>
-            <b>Explore</b><p>Open the map and discover places that hold traces from people who were here before you.</p>
-          </div>
-          <div class="flow-arrow a1">→</div>
-          <div class="flow-step ro">
-            <span class="f-num">02</span><div class="f-emoji">📍</div>
-            <b>Reach &amp; Unlock</b><p>Traces stay locked until you physically walk to the spot. Enter the 50–100 m radius and it unlocks — reveal who was here and how the place changed.</p>
-          </div>
-          <div class="flow-arrow a2">→</div>
-          <div class="flow-step ro">
-            <span class="f-num">03</span><div class="f-emoji">✍️</div>
-            <b>Relate &amp; Connect</b><p>Find a memory you relate to. Connect your stories across years, or leave your own trace where you stand for whoever comes next.</p>
-          </div>
-          <div class="flow-arrow a3">→</div>
-          <div class="flow-step ro">
-            <span class="f-num">04</span><div class="f-emoji">🛶</div>
-            <b>Continue</b><p>Follow someone's journey across life — from college, to a first job, to a new city, to a mountain summit.</p>
-          </div>
+        <div class="simple-steps">
+          <div class="ss-step ro"><span class="ss-num">1</span><span>Open the map, stand somewhere meaningful</span></div>
+          <div class="ss-step ro"><span class="ss-num">2</span><span>Drop a capsule — write something honest</span></div>
+          <div class="ss-step ro"><span class="ss-num">3</span><span>Choose how long it stays sealed (1yr / 5yr / 10yr)</span></div>
+          <div class="ss-step ro"><span class="ss-num">4</span><span>Someone walks here later and finds it</span></div>
         </div>
-
-        <div class="full-flow-chain ro">
-          <div class="chain-title">The Physical Discovery Flow</div>
-          <div class="chain-steps">
-            <span class="cs-item">Explore Map</span>
-            <span class="cs-sep">↓</span>
-            <span class="cs-item">See trace nearby</span>
-            <span class="cs-sep">↓</span>
-            <span class="cs-item">Go to location</span>
-            <span class="cs-sep">↓</span>
-            <span class="cs-item">Enter 50–100m radius</span>
-            <span class="cs-sep">↓</span>
-            <span class="cs-item">Unlock</span>
-            <span class="cs-sep">↓</span>
-            <span class="cs-item">Discover who was here</span>
-            <span class="cs-sep">↓</span>
-            <span class="cs-item">Read memory/journey</span>
-            <span class="cs-sep">↓</span>
-            <span class="cs-item">See place change</span>
-            <span class="cs-sep">↓</span>
-            <span class="cs-item">Relate &amp; Connect</span>
-            <span class="cs-sep">↓</span>
-            <span class="cs-item">Leave your trace</span>
-            <span class="cs-sep">↓</span>
-            <span class="cs-item">Found later</span>
-          </div>
-        </div>
-        <p class="flow-note ro">📌 Traces never unlock remotely. Your feet have to do the walking.</p>
+        <p class="flow-note ro">📌 Capsules only unlock when someone physically stands within 100m of your exact spot.</p>
       </section>
 
-      <!-- MAIN IDEA -->
-      <section class="home-section alt" id="idea">
-        <h2 class="hs-title ro">What if someone who thought like you<br />was here before you?</h2>
-        <p class="hs-sub ro">No followers. No likes. No feeds. People naturally discover each other through shared places and feelings.</p>
-
-        <div class="idea-wrap">
-          <div class="idea-mems">
-            <div class="mem-chip ro">
-              <span class="m-yr">2024 · Rohan</span>
-              <p>"I used to sit here after class and think about what I wanted to do with my life."</p>
-            </div>
-            <div class="idea-link ro">➜</div>
-            <div class="mem-chip ro highlight-chip">
-              <span class="m-yr">2026 · Kabir</span>
-              <p>"That's exactly why I came here. I still sit here thinking about the same thing."</p>
-            </div>
-          </div>
-          <p class="idea-tag ro">Same place. Same feeling. <b>Different time.</b></p>
-          <div class="idea-connect-preview ro">
-            <div class="idea-action-box">
-              <span class="connect-chip">🤝 Connect These Stories</span>
-              <p class="idea-note">Now they become part of the same story. A quiet thread between two people years apart who never met, but shared the exact same moment on the exact same ground.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- FINAL CTA -->
       <section class="final-cta ro">
-        <p class="fc-eyebrow">Leave a Trace</p>
         <h2>You were here.</h2>
-        <p class="fc-sub">Leave something behind for the next person who walks the same ground.</p>
-        <div class="hero-actions">
-          <button class="btn btn-primary btn-xl" data-goto="explore">Explore the Map</button>
-          <button class="btn btn-ghost btn-xl" data-goto="leave">Leave a Trace</button>
-        </div>
-        <p class="fc-foot">A trace stays sealed until its date opens — and even then, it only unlocks when you're physically at the spot, within a 50–100 m radius.<br />Someone walked where you walk now. Leave something for whoever comes next.</p>
+        <p class="fc-sub">Leave something for whoever comes next.</p>
+        <button class="btn btn-primary btn-xl" data-goto="explore">Open the Map</button>
       </section>
-
     </div>
   </section>
 
   <!-- ============================ EXPLORE =========================== -->
   <section class="view map-view" data-view="explore" hidden>
     <div id="map" class="map"></div>
-
     <div class="map-chip" id="map-chip" hidden></div>
 
     <div class="fab">
-      <button id="locate-btn" class="btn btn-primary fab-btn" title="Show my location">◎ My location</button>
+      <button id="drop-capsule-btn" class="btn btn-primary fab-btn drop-btn" hidden>📍 Drop capsule here</button>
+      <button id="locate-btn" class="btn btn-ghost fab-btn" title="Show my location">◎ My location</button>
     </div>
 
     <div class="legend">
-      <span class="lg"><i class="lg-dot place"></i>place</span>
+      <span class="lg"><i class="lg-dot place"></i>capsule</span>
       <span class="lg"><i class="lg-dot you"></i>you</span>
-    </div>
-
-    <div class="pick-banner" id="pick-banner" hidden>
-      <span>Tap anywhere on the map to choose a place</span>
-      <button class="btn btn-ghost btn-sm" id="pick-cancel">Cancel</button>
     </div>
   </section>
 
   <!-- ========================= PLACE PAGE =========================== -->
   <section class="view scroll-view" data-view="place" hidden>
     <div class="page-head">
-      <button class="btn btn-ghost btn-sm" id="place-back">← Back</button>
+      <button class="btn btn-ghost btn-sm" id="place-back">← Map</button>
     </div>
     <div id="place-body"></div>
   </section>
@@ -247,14 +140,6 @@
   <!-- ========================= LEAVE A TRACE ======================== -->
   <section class="view scroll-view" data-view="leave" hidden>
     <div class="leave-wrap" id="leave-body"></div>
-  </section>
-
-  <!-- ============================= TRAILS =========================== -->
-  <section class="view scroll-view" data-view="trails" hidden>
-    <div class="page-head">
-      <h1>Journeys &amp; Trails</h1>
-    </div>
-    <div id="trails-body" class="trails-body"></div>
   </section>
 
   <!-- ========================== MY TRACES =========================== -->
@@ -265,11 +150,61 @@
     <div id="traces-body"></div>
   </section>
 
+  <!-- ============================= PLANS MODAL ============================= -->
+  <div id="modal-plans" class="modal" hidden>
+    <div class="modal-card modal-plans-card">
+      <button class="modal-close" data-close="modal-plans">✕</button>
+      <div class="plans-head">
+        <h2>Storage Plans</h2>
+        <p>Every capsule is stored permanently. Start free — upgrade if you need more space.</p>
+      </div>
+      <div class="plans-grid">
+        <div class="plan-card plan-free">
+          <div class="plan-badge">Free</div>
+          <div class="plan-price">₹0 <span>/forever</span></div>
+          <ul class="plan-features">
+            <li>✓ 500 MB storage</li>
+            <li>✓ Up to 20 capsules</li>
+            <li>✓ Text + 1 photo per capsule</li>
+            <li>✓ Connect stories</li>
+            <li>✓ Permanent storage</li>
+          </ul>
+          <button class="btn btn-ghost" disabled>Current plan</button>
+        </div>
+        <div class="plan-card plan-explorer">
+          <div class="plan-badge badge-blue">Explorer</div>
+          <div class="plan-price">₹99 <span>/month</span></div>
+          <ul class="plan-features">
+            <li>✓ 5 GB storage</li>
+            <li>✓ Unlimited capsules</li>
+            <li>✓ Up to 5 photos per capsule</li>
+            <li>✓ Video support (coming soon)</li>
+            <li>✓ Priority support</li>
+          </ul>
+          <button class="btn btn-primary razorpay-btn" data-plan="explorer" data-amount="9900">Get Explorer</button>
+        </div>
+        <div class="plan-card plan-legacy">
+          <div class="plan-badge badge-gold">Legacy</div>
+          <div class="plan-price">₹299 <span>/month</span></div>
+          <ul class="plan-features">
+            <li>✓ 50 GB storage</li>
+            <li>✓ Unlimited capsules</li>
+            <li>✓ Unlimited photos + videos</li>
+            <li>✓ Custom unlock dates</li>
+            <li>✓ Journey trails</li>
+            <li>✓ Legacy badge on profile</li>
+          </ul>
+          <button class="btn btn-primary razorpay-btn" data-plan="legacy" data-amount="29900">Get Legacy</button>
+        </div>
+      </div>
+      <p class="plans-foot">Payments secured by Razorpay. Cancel anytime.</p>
+    </div>
+  </div>
+
   <!-- ============================= AUTH ============================= -->
   <div id="modal-auth" class="modal" hidden>
     <div class="modal-card">
       <button class="modal-close" data-close="modal-auth">✕</button>
-
       <div id="auth-view-form" class="auth-view">
         <div class="auth-head">
           <div class="auth-icon">⏳</div>
@@ -300,7 +235,7 @@
         <div class="auth-head">
           <div class="auth-icon">✉️</div>
           <h3>Confirm your email</h3>
-          <p class="auth-sub">We sent a confirmation link to<br /><b id="verify-email"></b>.<br />Open it, then click below to finish.</p>
+          <p class="auth-sub">We sent a link to<br /><b id="verify-email"></b>.<br />Open it, then click below.</p>
         </div>
         <div class="auth-form">
           <button class="btn btn-primary" id="verify-done" type="button">I confirmed — sign me in</button>
@@ -309,7 +244,6 @@
           <button class="btn-link" id="verify-back" type="button">← Back to sign in</button>
         </div>
       </div>
-
     </div>
   </div>
 
@@ -327,16 +261,17 @@
       document.head.appendChild(ls);
     }
   </script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js?v=11"></script>
-  <script src="js/geo.js?v=11"></script>
-  <script src="js/data.js?v=11"></script>
-  <script src="js/ui.js?v=11"></script>
-  <script src="js/explore.js?v=11"></script>
-  <script src="js/place.js?v=11"></script>
-  <script src="js/leave.js?v=11"></script>
-  <script src="js/traces.js?v=11"></script>
-  <script src="js/app.js?v=11"></script>
-  <script src="js/home.js?v=11"></script>
+  <script src="js/config.js?v=12"></script>
+  <script src="js/geo.js?v=12"></script>
+  <script src="js/data.js?v=12"></script>
+  <script src="js/ui.js?v=12"></script>
+  <script src="js/explore.js?v=12"></script>
+  <script src="js/place.js?v=12"></script>
+  <script src="js/leave.js?v=12"></script>
+  <script src="js/traces.js?v=12"></script>
+  <script src="js/app.js?v=12"></script>
+  <script src="js/home.js?v=12"></script>
 </body>
 </html>
