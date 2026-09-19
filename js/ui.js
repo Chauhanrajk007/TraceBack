@@ -1,13 +1,21 @@
 const UI = (() => {
   let toastTimer = null;
 
-  const showToast = (message, isError = false) => {
+  const showToast = (message, isError = false, sticky = false) => {
     const el = document.getElementById("toast");
     el.textContent = message;
     el.classList.toggle("err", isError);
     el.hidden = false;
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => (el.hidden = true), 3800);
+    if (!sticky) {
+      toastTimer = setTimeout(() => (el.hidden = true), 3800);
+    }
+  };
+
+  const hideToast = () => {
+    clearTimeout(toastTimer);
+    const el = document.getElementById("toast");
+    if (el) el.hidden = true;
   };
 
   const openModal = (id) => {
@@ -113,6 +121,7 @@ const UI = (() => {
 
   return {
     showToast,
+    hideToast,
     openModal,
     closeModal,
     setAuthLabel,

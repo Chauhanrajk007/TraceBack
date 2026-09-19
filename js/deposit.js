@@ -133,13 +133,21 @@ const Deposit = (() => {
   };
 
   const useLocationPin = async () => {
+    const btn = document.getElementById("d-use-location");
+    if (btn) btn.disabled = true;
+    UI.showToast("Finding your location…", false, true);
     try {
       const loc = await Geo.getCurrentPosition();
       setPin(loc.lat, loc.lng);
       Explore.focusOn(loc.lat, loc.lng);
       setError(null);
+      UI.hideToast();
+      UI.showToast("Pin set");
     } catch (e) {
+      UI.hideToast();
       UI.showToast(e.message, true);
+    } finally {
+      if (btn) btn.disabled = false;
     }
   };
 
@@ -164,7 +172,7 @@ const Deposit = (() => {
   const submit = async () => {
     if (!Data.currentUser()) {
       UI.showToast("Sign in first — bottles need an author", true);
-      UI.openModal("modal-auth");
+      App.openAuthModal();
       return;
     }
     const title = document.getElementById("d-title").value.trim();

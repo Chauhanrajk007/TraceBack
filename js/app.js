@@ -32,9 +32,28 @@ const App = (() => {
         UI.showToast("Signed out");
         refreshEverything();
       } else {
-        UI.openModal("modal-auth");
+        App.openAuthModal();
       }
     });
+  };
+
+  const openAuthModal = () => {
+    UI.closeModal("modal-auth");
+    // reset to sign-in state so the confirm-password field never leaks into login
+    const formView = $("auth-view-form");
+    const verifyView = $("auth-view-verify");
+    formView.hidden = false;
+    verifyView.hidden = true;
+    $("auth-title").textContent = "Sign in";
+    $("auth-sub").textContent = "Bottles need an author. Sign in to drop yours.";
+    $("auth-submit").textContent = "Sign in";
+    $("auth-toggle").textContent = "New here? Create an account";
+    $("pw-confirm-field").hidden = true;
+    $("auth-confirm").required = false;
+    $("auth-confirm").value = "";
+    $("auth-form").reset();
+    $("auth-err").hidden = true;
+    UI.openModal("modal-auth");
   };
 
   const bindAuth = () => {
@@ -179,7 +198,7 @@ const App = (() => {
     await refreshCapsules();
   };
 
-  return { init, refreshCapsules, refreshEverything };
+  return { init, refreshCapsules, refreshEverything, openAuthModal };
 })();
 
 document.addEventListener("DOMContentLoaded", () => App.init());

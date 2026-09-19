@@ -140,11 +140,14 @@ const Explore = (() => {
     locating = true;
     const btn = document.getElementById("locate-btn");
     if (btn) btn.disabled = true;
+    UI.showToast("Finding your location… this can take a few seconds", false, true);
     try {
       const loc = await Geo.getCurrentPosition();
       setUserLocation(loc);
+      UI.hideToast();
       UI.showToast("You're placed on the map");
     } catch (e) {
+      UI.hideToast();
       UI.showToast(e.message, true);
     } finally {
       locating = false;
