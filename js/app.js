@@ -23,7 +23,6 @@ const App = (() => {
   const bindActions = () => {
     $("deposit-open").addEventListener("click", () => Deposit.showPanel());
     $("deposit-close").addEventListener("click", () => Deposit.hidePanel());
-    $("empty-drop").addEventListener("click", () => Deposit.showPanel());
     $("locate-btn").addEventListener("click", () => Explore.locateMe());
     $("auth-btn").addEventListener("click", () => {
       const user = Data.currentUser();

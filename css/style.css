@@ -145,25 +145,6 @@ h1, h2, h3 { font-family: "Inter", system-ui, sans-serif; margin: 0; letter-spac
 .lg-dot.open { background: var(--ok); }
 .lg-dot.you { background: #3f9dff; }
 
-.empty-state {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -60%);
-  z-index: 900;
-  text-align: center;
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  box-shadow: 0 12px 40px rgba(20, 30, 60, 0.16);
-  padding: 26px 34px;
-  display: grid;
-  gap: 8px;
-  justify-items: center;
-  pointer-events: auto;
-}
-.empty-state div { font-size: 17px; font-weight: 700; }
-.empty-state p { margin: 0; color: var(--muted); font-size: 13.5px; }
-
 /* ---------- deposit panel ---------- */
 .panel {
   position: absolute;

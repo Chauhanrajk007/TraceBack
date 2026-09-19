@@ -182,14 +182,12 @@ const Explore = (() => {
 
   const updateCountBadge = () => {
     const badge = document.getElementById("map-count");
-    const empty = document.getElementById("empty-state");
     if (badge) {
       badge.hidden = false;
       badge.textContent = capsules.length === 0
         ? "nothing hidden here yet"
         : `${capsules.length} bottle${capsules.length === 1 ? "" : "s"} waiting on this map`;
     }
-    if (empty) empty.hidden = capsules.length > 0;
   };
 
   return {
