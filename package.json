@@ -1,0 +1,11 @@
+{
+  "name": "timebottle",
+  "version": "1.0.0",
+  "description": "Reverse Time Capsule — a message in a bottle locked to GPS coordinates and a time.",
+  "scripts": {
+    "build": "node scripts/gen-config.js",
+    "dev": "npx serve .",
+    "start": "npx serve ."
+  },
+  "files": ["index.html", "css", "js", "supabase"]
+}

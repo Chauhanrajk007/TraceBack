@@ -1,0 +1,7 @@
+const CONFIG = {
+  SUPABASE_URL: "https://kdrocjrvnjnvzqxvfnwyjn.supabase.co",
+  SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtkcm9jcmp2bmp2bnpxdmZueWpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4MTYzMDMsImV4cCI6MjEwNTM5MjMwM30.H73Wizs-RfsxB27_obTCVRfJeGuhHEgpWiLNC5iWHUY",
+  UNLOCK_RADIUS_METERS: 100,
+  MAP_CENTER: [20.5937, 78.9629],
+  MAP_ZOOM: 5
+};

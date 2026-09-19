@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TimeBottle — a message in a bottle, for a stranger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">⏳ Time<b>Bottle</b></div>
+    <div class="topbar-right">
+      <span id="auth-label" class="auth-label" hidden></span>
+      <button id="auth-btn" class="btn btn-ghost">Sign in</button>
+    </div>
+  </header>
+
+  <div id="setup-banner" class="banner" hidden></div>
+
+  <main class="stage">
+    <div id="map" class="map"></div>
+
+    <div class="fab">
+      <button id="locate-btn" class="btn btn-ghost fab-btn" title="Show my location">📍 Me</button>
+      <button id="deposit-open" class="btn btn-primary fab-btn">＋ Drop a bottle</button>
+    </div>
+
+    <aside id="deposit-panel" class="panel" hidden>
+      <div class="panel-head">
+        <h2>Drop a bottle</h2>
+        <button id="deposit-close" class="icon-btn" title="Close">✕</button>
+      </div>
+      <p class="hint">Write today down, pick a spot on the map, choose when it opens. Anyone standing at that spot after that day finds it.</p>
+      <div id="deposit-form"></div>
+    </aside>
+  </main>
+
+  <div id="modal-auth" class="modal" hidden>
+    <div class="modal-card">
+      <button class="modal-close" data-close="modal-auth">✕</button>
+      <h3 id="auth-title">Sign in</h3>
+      <form id="auth-form" autocomplete="off">
+        <label>Username or email<input id="auth-username" type="text" required /></label>
+        <label>Password<input id="auth-password" type="password" required /></label>
+        <div id="auth-err" class="form-err" hidden></div>
+        <button class="btn btn-primary" type="submit" id="auth-submit">Sign in</button>
+        <button class="btn-link" type="button" id="auth-toggle">New here? Create an account</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-capsule" class="modal" hidden>
+    <div class="modal-card wide">
+      <button class="modal-close" data-close="modal-capsule">✕</button>
+      <div id="capsule-body"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/geo.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/explore.js"></script>
+  <script src="js/deposit.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
