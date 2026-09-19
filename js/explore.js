@@ -17,6 +17,13 @@ const Explore = (() => {
     map.on("click", (e) => {
       if (onMapPick) onMapPick(e.latlng.lat, e.latlng.lng);
     });
+    L.control
+      .zoom({ position: "bottomleft" })
+      .addTo(map);
+  };
+
+  const resetView = () => {
+    if (map) map.flyTo([CONFIG.MAP_CENTER[0], CONFIG.MAP_CENTER[1]], CONFIG.MAP_ZOOM, { duration: 0.6 });
   };
 
   const addTiles = (m) => {
@@ -175,10 +182,14 @@ const Explore = (() => {
 
   const updateCountBadge = () => {
     const badge = document.getElementById("map-count");
-    if (!badge) return;
-    const n = capsules.length;
-    badge.hidden = false;
-    badge.textContent = n === 0 ? "no bottles yet — be the first" : `${n} bottle${n === 1 ? "" : "s"} waiting on this map`;
+    const empty = document.getElementById("empty-state");
+    if (badge) {
+      badge.hidden = false;
+      badge.textContent = capsules.length === 0
+        ? "nothing hidden here yet"
+        : `${capsules.length} bottle${capsules.length === 1 ? "" : "s"} waiting on this map`;
+    }
+    if (empty) empty.hidden = capsules.length > 0;
   };
 
   return {
@@ -188,6 +199,7 @@ const Explore = (() => {
     setPin,
     clearPin,
     focusOn,
+    resetView,
     setPickMode,
     refreshCapsules: setCapsules
   };

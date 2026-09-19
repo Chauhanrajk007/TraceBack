@@ -1,6 +1,7 @@
 const Data = (() => {
   let supabaseClient = null;
   let cachedSession = null;
+  let lastSignup = null;
 
   const uid = () => (crypto.randomUUID ? crypto.randomUUID() : "id-" + Date.now() + "-" + Math.random().toString(16).slice(2));
 
@@ -22,7 +23,7 @@ const Data = (() => {
   const currentUser = () =>
     cachedSession ? { id: cachedSession.user.id, username: cachedSession.user.email } : null;
 
-const register = async (username, password) => {
+  const register = async (username, password) => {
     const email = username.includes("@") ? username : `${username}@timebottle.local`;
     const { data, error } = await supabaseClient.auth.signUp({
       email,
@@ -34,8 +35,27 @@ const register = async (username, password) => {
     });
     if (error) throw new Error(authMessage(error.message));
     const needsConfirmation = !data.session;
-    if (!needsConfirmation) await ensureProfile(data.user.id, username, email);
-    return { id: data.user.id, username: email, needsConfirmation };
+    if (needsConfirmation) {
+      lastSignup = { email, password, username };
+      return { id: data.user.id, username: email, needsConfirmation: true };
+    }
+    await ensureProfile(data.user.id, username, email);
+    return { id: data.user.id, username: email, needsConfirmation: false };
+  };
+
+  const resendConfirmation = async () => {
+    if (!lastSignup) throw new Error("No pending signup found");
+    const { error } = await supabaseClient.auth.resend({
+      type: "signup",
+      email: lastSignup.email,
+      options: { emailRedirectTo: window.location.origin }
+    });
+    if (error) throw new Error(authMessage(error.message));
+  };
+
+  const completeSignup = async () => {
+    if (!lastSignup) throw new Error("Please sign up first");
+    return await login(lastSignup.username, lastSignup.password);
   };
 
   const ensureProfile = async (id, username, email) => {
@@ -107,6 +127,8 @@ const register = async (username, password) => {
   return {
     init,
     register,
+    resendConfirmation,
+    completeSignup,
     login,
     logout,
     currentUser,

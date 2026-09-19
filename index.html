@@ -27,8 +27,20 @@
     <div id="map" class="map"></div>
 
     <div class="fab">
-      <button id="locate-btn" class="btn btn-ghost fab-btn" title="Show my location">📍 Me</button>
-      <button id="deposit-open" class="btn btn-primary fab-btn">＋ Drop a bottle</button>
+      <button id="locate-btn" class="btn btn-primary fab-btn" title="Show my location">◎ My location</button>
+      <button id="deposit-open" class="btn btn-ghost fab-btn">＋ Drop a bottle</button>
+    </div>
+
+    <div class="legend">
+      <span class="lg"><i class="lg-dot sealed"></i>sealed</span>
+      <span class="lg"><i class="lg-dot open"></i>open</span>
+      <span class="lg"><i class="lg-dot you"></i>you</span>
+    </div>
+
+    <div class="empty-state" id="empty-state" hidden>
+      <div>🌊 The map is empty</div>
+      <p>Be the first — drop a bottle for a stranger to find.</p>
+      <button class="btn btn-primary btn-sm" id="empty-drop">＋ Drop a bottle</button>
     </div>
 
     <aside id="deposit-panel" class="panel" hidden>
@@ -44,23 +56,41 @@
   <div id="modal-auth" class="modal" hidden>
     <div class="modal-card">
       <button class="modal-close" data-close="modal-auth">✕</button>
-      <div class="auth-head">
-        <div class="auth-icon">⏳</div>
-        <h3 id="auth-title">Sign in</h3>
-        <p class="auth-sub" id="auth-sub">Bottles need an author. Sign in to drop yours.</p>
+
+      <div id="auth-view-form" class="auth-view">
+        <div class="auth-head">
+          <div class="auth-icon">⏳</div>
+          <h3 id="auth-title">Sign in</h3>
+          <p class="auth-sub" id="auth-sub">Bottles need an author. Sign in to drop yours.</p>
+        </div>
+        <form id="auth-form" class="auth-form" autocomplete="off">
+          <label>Email<input id="auth-username" type="email" placeholder="you@example.com" required /></label>
+          <label class="pw-label">Password
+            <span class="pw-wrap">
+              <input id="auth-password" type="password" placeholder="••••••••" required />
+              <button type="button" class="pw-toggle" id="pw-toggle" tabindex="-1" aria-label="Show password">👁</button>
+            </span>
+          </label>
+          <div id="auth-err" class="form-err" hidden></div>
+          <button class="btn btn-primary" type="submit" id="auth-submit">Sign in</button>
+          <button class="btn-link" type="button" id="auth-toggle">New here? Create an account</button>
+        </form>
       </div>
-      <form id="auth-form" class="auth-form" autocomplete="off">
-        <label>Email<input id="auth-username" type="text" placeholder="you@example.com" required /></label>
-        <label class="pw-label">Password
-          <span class="pw-wrap">
-            <input id="auth-password" type="password" placeholder="••••••••" required />
-            <button type="button" class="pw-toggle" id="pw-toggle" tabindex="-1" aria-label="Show password">👁</button>
-          </span>
-        </label>
-        <div id="auth-err" class="form-err" hidden></div>
-        <button class="btn btn-primary" type="submit" id="auth-submit">Sign in</button>
-        <button class="btn-link" type="button" id="auth-toggle">New here? Create an account</button>
-      </form>
+
+      <div id="auth-view-verify" class="auth-view" hidden>
+        <div class="auth-head">
+          <div class="auth-icon">✉️</div>
+          <h3>Confirm your email</h3>
+          <p class="auth-sub">We sent a confirmation link to<br /><b id="verify-email"></b>.<br />Open it, then click below to finish.</p>
+        </div>
+        <div class="auth-form">
+          <button class="btn btn-primary" id="verify-done" type="button">I confirmed — sign me in</button>
+          <button class="btn-ghost btn" id="verify-resend" type="button">Resend link</button>
+          <span class="verify-hint" id="verify-hint"></span>
+          <button class="btn-link" id="verify-back" type="button">← Back to sign in</button>
+        </div>
+      </div>
+
     </div>
   </div>
 
