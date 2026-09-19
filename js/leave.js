@@ -61,7 +61,7 @@ const Leave = (() => {
 
   const progressDots = () => `
     <div class="step-dots">
-      ${[1,2,3].map(i => `<div class="sdot ${i === step ? "on" : i < step ? "done" : ""}"></div>`).join("")}
+      ${[1,2,3].map(i => `<div class="sdot ${i === step ? "on" : i < step ? "sdot-done" : ""}"></div>`).join("")}
     </div>`;
 
   const render = () => {
