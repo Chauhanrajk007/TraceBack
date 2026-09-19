@@ -24,12 +24,19 @@ const Data = (() => {
 
   const register = async (username, password) => {
     const email = username.includes("@") ? username : `${username}@timebottle.local`;
-    const { data, error } = await supabaseClient.auth.signUp({ email, password });
+    const { data, error } = await supabaseClient.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { username },
+        emailRedirectTo: window.location.origin
+      }
+    });
     if (error) throw new Error(error.message);
-    const user = { id: data.user.id, username: email };
-    const { error: perr } = await supabaseClient.from("profiles").insert({ id: data.user.id, username: email });
-    if (perr && !String(perr.message).includes("already exists")) throw new Error(perr.message);
-    return user;
+    // email confirmation on? then there's no session yet, profile is created
+    // by the on_auth_user_created trigger after the user confirms.
+    const needsConfirmation = !data.session;
+    return { id: data.user.id, username: email, needsConfirmation };
   };
 
   const login = async (username, password) => {

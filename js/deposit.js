@@ -127,9 +127,6 @@ const Deposit = (() => {
     setError(null);
     document.getElementById("deposit-panel").hidden = false;
     Explore.setPickMode(true, onMapPick);
-    if (!pos) {
-      useLocationPin();
-    }
   };
 
   const hidePanel = () => {

@@ -6,10 +6,9 @@ const Explore = (() => {
   let pinMarker = null;
   let currentLocation = null;
   let capsules = [];
-  const authorCache = {};
-
   let onMapPick = null;
   let locating = false;
+  const authorCache = {};
 
   const init = async () => {
     map = L.map("map", { zoomControl: true }).setView(CONFIG.MAP_CENTER, CONFIG.MAP_ZOOM);
@@ -54,6 +53,7 @@ const Explore = (() => {
       const author = await getAuthor(c.author_id);
       addMarker(c, author);
     }
+    updateCountBadge();
   };
 
   const isMine = (c) => {
@@ -67,10 +67,16 @@ const Explore = (() => {
     const icon = L.divIcon({
       className: "rtc-icon",
       html: `<div class="rtc-marker ${opened ? "open" : "sealed"}">${opened ? "💌" : "🔒"}${mine ? '<span class="mine-tag"></span>' : ""}</div>`,
-      iconSize: [34, 34],
-      iconAnchor: [17, 17]
+      iconSize: [36, 36],
+      iconAnchor: [18, 18]
     });
-    const marker = L.marker([c.lat, c.lng], { icon });
+    const marker = L.marker([c.lat, c.lng], { icon, title: c.title });
+    const hint = mine
+      ? `${c.title} (yours)`
+      : opened
+        ? `${c.title} — open`
+        : `${c.title} — opens ${Geo.fmtDate(c.unlock_at)}`;
+    marker.bindTooltip(hint, { direction: "top", offset: [0, -20], opacity: 0.95 });
     marker.bindPopup(
       `<div class="pop">
         <div class="pop-title">${c.title}</div>
@@ -90,7 +96,7 @@ const Explore = (() => {
     if (!loc) {
       try {
         loc = await Geo.getCurrentPosition();
-        setUserLocation(loc);
+        setUserLocation(loc, false);
       } catch {
         loc = null;
       }
@@ -102,21 +108,24 @@ const Explore = (() => {
     currentLocation = loc;
     if (!map) return;
     if (userMarker) { userMarker.remove(); userCircle.remove(); }
-    userMarker = L.circleMarker([loc.lat, loc.lng], {
-      radius: 7,
-      color: "#7cc7ff",
-      fillColor: "#7cc7ff",
-      fillOpacity: 1,
-      weight: 2
+    userMarker = L.marker([loc.lat, loc.lng], {
+      icon: L.divIcon({
+        className: "user-icon",
+        html: '<div class="user-dot"><span></span></div>',
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
+      }),
+      zIndexOffset: 1000
     }).addTo(map);
     userCircle = L.circle([loc.lat, loc.lng], {
       radius: CONFIG.UNLOCK_RADIUS_METERS,
-      color: "#7ee0a3",
-      fillColor: "#7ee0a3",
+      color: "#3f9dff",
+      fillColor: "#3f9dff",
       fillOpacity: 0.08,
-      weight: 1
+      weight: 1,
+      interactive: false
     }).addTo(map);
-    if (fly) map.setView([loc.lat, loc.lng], Math.max(map.getZoom(), 15));
+    if (fly) map.flyTo([loc.lat, loc.lng], Math.max(map.getZoom(), 15), { duration: 1.2 });
   };
 
   const locateMe = async () => {
@@ -142,9 +151,9 @@ const Explore = (() => {
     pinMarker = L.marker([lat, lng], {
       icon: L.divIcon({
         className: "rtc-icon",
-        html: `<div class="rtc-marker" style="width:38px;height:38px;font-size:19px;background:rgba(183,156,255,0.3);border-color:#b79cff">⏳</div>`,
+        html: `<div class="pin-marker">📍</div>`,
         iconSize: [38, 38],
-        iconAnchor: [19, 19]
+        iconAnchor: [19, 34]
       })
     }).addTo(map);
   };
@@ -155,13 +164,21 @@ const Explore = (() => {
   };
 
   const focusOn = (lat, lng, zoom = 15) => {
-    if (map) map.setView([lat, lng], zoom);
+    if (map) map.flyTo([lat, lng], zoom, { duration: 1 });
   };
 
   const setPickMode = (enabled, handler) => {
     onMapPick = enabled ? handler || setPin : null;
     if (enabled && map) map.getContainer().style.cursor = "crosshair";
     if (!enabled && map) map.getContainer().style.cursor = "";
+  };
+
+  const updateCountBadge = () => {
+    const badge = document.getElementById("map-count");
+    if (!badge) return;
+    const n = capsules.length;
+    badge.hidden = false;
+    badge.textContent = n === 0 ? "no bottles yet — be the first" : `${n} bottle${n === 1 ? "" : "s"} waiting on this map`;
   };
 
   return {

@@ -38,6 +38,13 @@ const App = (() => {
   };
 
   const bindAuth = () => {
+    $("pw-toggle").addEventListener("click", () => {
+      const input = $("auth-password");
+      const show = input.type === "password";
+      input.type = show ? "text" : "password";
+      $("pw-toggle").textContent = show ? "🙈" : "👁";
+    });
+
     $("auth-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       const username = $("auth-username").value.trim();
@@ -48,7 +55,12 @@ const App = (() => {
       try {
         if (isSignup) {
           if (password.length < 4) throw new Error("Password must be at least 4 characters");
-          await Data.register(username, password);
+          const user = await Data.register(username, password);
+          if (user.needsConfirmation) {
+            UI.showToast("Almost there! Check your email to confirm your account.");
+            UI.closeModal("modal-auth");
+            return;
+          }
           UI.showToast(`Welcome, ${username} ✦ the future is yours`);
         } else {
           await Data.login(username, password);

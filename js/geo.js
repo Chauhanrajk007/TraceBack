@@ -11,7 +11,7 @@ const Geo = (() => {
     return 2 * R * Math.asin(Math.sqrt(a));
   };
 
-  const request = (opts) =>
+  const locate = (opts) =>
     new Promise((resolve, reject) => {
       navigator.geolocation.getCurrentPosition(
         (pos) =>
@@ -21,7 +21,7 @@ const Geo = (() => {
             accuracy: pos.coords.accuracy || 0
           }),
         (err) => reject(err),
-        { timeout: 18000, maximumAge: 60000, enableHighAccuracy: true, ...opts }
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 0, ...opts }
       );
     });
 
@@ -29,25 +29,31 @@ const Geo = (() => {
     if (!navigator.geolocation) {
       throw new Error("Geolocation is not supported by this browser");
     }
-    try {
-      return await request();
-    } catch (firstErr) {
+    // GPS takes a moment. Try high accuracy first; only fall back to
+    // tower/WiFi-based position as a last resort.
+    const attempts = [
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 },
+      { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 },
+      { enableHighAccuracy: false, timeout: 15000, maximumAge: 60000 }
+    ];
+    let lastErr = null;
+    for (const opts of attempts) {
       try {
-        return await request({ enableHighAccuracy: false, timeout: 25000 });
-      } catch (secondErr) {
-        const use = firstErr.code != null ? firstErr : secondErr;
-        throw new Error("Could not get your location: " + messageFor(use));
+        return await locate(opts);
+      } catch (e) {
+        lastErr = e;
       }
     }
+    throw new Error("Could not get your location: " + messageFor(lastErr));
   };
 
   const messageFor = (err) => {
-    switch (err.code) {
-      case err.PERMISSION_DENIED:
+    switch (err && err.code) {
+      case 1:
         return "location permission blocked";
-      case err.POSITION_UNAVAILABLE:
+      case 2:
         return "location unavailable";
-      case err.TIMEOUT:
+      case 3:
         return "location request timed out";
       default:
         return "unknown error";

@@ -21,6 +21,7 @@
   </header>
 
   <div id="setup-banner" class="banner" hidden></div>
+  <div id="map-count" class="map-count" hidden></div>
 
   <main class="stage">
     <div id="map" class="map"></div>
@@ -50,7 +51,12 @@
       </div>
       <form id="auth-form" class="auth-form" autocomplete="off">
         <label>Email<input id="auth-username" type="text" placeholder="you@example.com" required /></label>
-        <label>Password<input id="auth-password" type="password" placeholder="••••••••" required /></label>
+        <label class="pw-label">Password
+          <span class="pw-wrap">
+            <input id="auth-password" type="password" placeholder="••••••••" required />
+            <button type="button" class="pw-toggle" id="pw-toggle" tabindex="-1" aria-label="Show password">👁</button>
+          </span>
+        </label>
         <div id="auth-err" class="form-err" hidden></div>
         <button class="btn btn-primary" type="submit" id="auth-submit">Sign in</button>
         <button class="btn-link" type="button" id="auth-toggle">New here? Create an account</button>
