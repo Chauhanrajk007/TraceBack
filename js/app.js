@@ -9,6 +9,8 @@ const App = (() => {
       const banner = $("setup-banner");
       banner.hidden = false;
       banner.innerHTML = `⚠️ ${e.message}`;
+      show("home");
+      Home.init();
       return;
     }
     UI.bindModalClosers();
@@ -19,6 +21,7 @@ const App = (() => {
 
     await loadAll();
     show("home");
+    Home.init();
   };
 
   // --------- router ---------
@@ -65,7 +68,7 @@ const App = (() => {
     $("auth-view-form").hidden = false;
     $("auth-view-verify").hidden = true;
     $("auth-title").textContent = "Sign in";
-    $("auth-sub").textContent = "Bottles need an author. Sign in to drop yours.";
+    $("auth-sub").textContent = "Traces need an author. Sign in to leave yours.";
     $("auth-submit").textContent = "Sign in";
     $("auth-toggle").textContent = "New here? Create an account";
     $("pw-confirm-field").hidden = true;
@@ -170,7 +173,7 @@ const App = (() => {
       $("auth-form").reset();
       setSignupFieldVisibility(false);
       $("auth-title").textContent = "Sign in";
-      $("auth-sub").textContent = "Bottles need an author. Sign in to drop yours.";
+      $("auth-sub").textContent = "Traces need an author. Sign in to leave yours.";
       $("auth-submit").textContent = "Sign in";
       $("auth-toggle").textContent = "New here? Create an account";
       showForm();
@@ -203,7 +206,7 @@ const App = (() => {
       const isSignup = isSignupMode();
       setSignupFieldVisibility(!isSignup);
       $("auth-title").textContent = isSignup ? "Sign in" : "Create account";
-      $("auth-sub").textContent = isSignup ? "Bottles need an author. Sign in to drop yours." : "Join to leave your first trace.";
+      $("auth-sub").textContent = isSignup ? "Traces need an author. Sign in to leave yours." : "Join to leave your first trace.";
       $("auth-submit").textContent = isSignup ? "Sign in" : "Create account";
       $("auth-toggle").textContent = isSignup ? "New here? Create an account" : "Already have an account? Sign in";
       $("auth-err").hidden = true;
@@ -216,8 +219,6 @@ const App = (() => {
       btn.addEventListener("click", () => show(btn.dataset.view));
     });
     $("brand").addEventListener("click", () => show("home"));
-    $("home-explore").addEventListener("click", () => show("explore"));
-    $("home-leave").addEventListener("click", () => startLeave(null));
     $("locate-btn").addEventListener("click", () => Explore.locateMe());
     $("place-back").addEventListener("click", () => show("explore"));
     $("pick-cancel").addEventListener("click", () => Explore.setPickMode(false));

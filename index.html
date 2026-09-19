@@ -3,17 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TimeBottle — someone was here before you</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏳</text></svg>" />
+  <title>Leave a Trace — someone was here before you</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="css/style.css?v=4" />
+  <link rel="stylesheet" href="css/style.css?v=5" />
+  <link rel="stylesheet" href="css/home.css?v=5" />
 </head>
 <body>
   <header class="topbar">
-    <button class="brand" id="brand" title="Home"><span class="logo">⏳</span>Time<b>Bottle</b></button>
+    <button class="brand" id="brand" title="Home">🧭 Leave a <b>Trace</b></button>
 
     <nav class="nav">
       <button class="nav-item" data-view="explore">Explore</button>
@@ -30,28 +31,223 @@
 
   <div id="setup-banner" class="banner" hidden></div>
 
+  <!-- ======================== OPENING ======================== -->
+  <div id="opening" class="opening" aria-hidden="true">
+    <button id="o-skip" type="button">Skip →</button>
+
+    <div class="o-world">
+      <div class="o-grid"></div>
+      <svg class="o-path" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path d="M20 30 C 34 22, 44 30, 55 34 S 48 66, 36 64 S 60 44, 72 56" />
+      </svg>
+      <div class="o-point"></div>
+      <div class="o-ring"></div>
+
+      <div class="o-place o-mountain">
+        <div class="o-pin"></div>
+        <span class="o-lab">Mountain</span>
+        <div class="o-yrs"><span>2023</span><span>2024</span><span>2026</span></div>
+      </div>
+      <div class="o-place o-college">
+        <div class="o-pin"></div>
+        <span class="o-lab">College</span>
+        <div class="o-yrs"><span>2023</span><span>2025</span><span>2026</span></div>
+      </div>
+      <div class="o-place o-cafe">
+        <div class="o-pin"></div>
+        <span class="o-lab">Café</span>
+        <div class="o-yrs"><span>2024</span><span>2025</span><span>2026</span></div>
+      </div>
+      <div class="o-place o-street">
+        <div class="o-pin"></div>
+        <span class="o-lab">Street</span>
+        <div class="o-yrs"><span>2022</span><span>2024</span><span>2026</span></div>
+      </div>
+    </div>
+
+    <div class="o-copy">
+      <p class="o-line-1">Someone was here before you.</p>
+      <p class="o-caption">People come and go. Places remain.<br />Their stories can <b>stay behind</b>.</p>
+    </div>
+  </div>
+
   <!-- ============================= HOME ============================= -->
-  <section class="view" data-view="home">
-    <div class="hero-wrap">
-      <div class="hero">
-        <h1 class="hero-title">Someone was<br /><span>here before you.</span></h1>
-        <p class="hero-sub">Discover the people, memories, and stories hidden in the places around you.</p>
-        <div class="hero-actions">
-          <button class="btn btn-primary btn-lg" id="home-explore">Explore the Map</button>
-          <button class="btn btn-ghost btn-lg" id="home-leave">Leave a Trace</button>
+  <section class="view home-view" data-view="home">
+    <div class="home-inner">
+
+      <!-- HERO -->
+      <div class="home-hero">
+        <p class="eyebrow ro">Leave a Trace</p>
+        <h1 class="ro">Someone was<br /><span>here before you.</span></h1>
+        <p class="hero-sub ro">Discover the people, memories, and stories hidden in the places around you.</p>
+        <div class="hero-actions ro">
+          <button class="btn btn-primary btn-xl" data-goto="explore">Explore the Map</button>
+          <button class="btn btn-ghost btn-xl" data-goto="leave">Leave a Trace</button>
         </div>
-        <p class="hero-places">A mountain. A college. A café.<br /><span>Different people. Different years. Same place.</span></p>
+        <div class="scroll-hint ro">↓</div>
       </div>
 
-      <div class="how">
-        <div class="how-step"><b>Explore</b><span>find a place</span></div>
-        <div class="how-arrow">→</div>
-        <div class="how-step"><b>Discover</b><span>read who was here</span></div>
-        <div class="how-arrow">→</div>
-        <div class="how-step"><b>Leave</b><span>write your own</span></div>
-        <div class="how-arrow">→</div>
-        <div class="how-step"><b>Continue</b><span>the story lives on</span></div>
-      </div>
+      <!-- QUICK CONCEPT -->
+      <section class="home-section" id="concept">
+        <h2 class="hs-title ro">A mountain. A college. A café.</h2>
+        <p class="hs-sub ro">Different people. Different years. Same place.</p>
+
+        <div class="concept-places">
+          <div class="place-card ro">
+            <div class="place-icon">⛰️</div>
+            <div class="place-name">Mountain</div>
+            <div class="place-who">People came here alone, at sunrise, and left a word behind.</div>
+          </div>
+          <div class="place-card place-college ro">
+            <div class="place-icon">🎓</div>
+            <div class="place-name">College</div>
+            <div class="place-who">A hundred students walked the same steps — and some of them wrote.</div>
+            <div class="college-line">
+              <div class="cl-row"><span class="cl-year">2023</span><span class="cl-q">"First day here. Didn't know anyone."</span></div>
+              <div class="cl-row"><span class="cl-year">2025</span><span class="cl-q">"Graduating soon. Can't believe it's over."</span></div>
+              <div class="cl-row"><span class="cl-year">2026</span><span class="cl-q">"I'm reading this as a junior. It gets better."</span></div>
+            </div>
+          </div>
+          <div class="place-card ro">
+            <div class="place-icon">☕</div>
+            <div class="place-name">Café</div>
+            <div class="place-who">Conversations that ended years ago, preserved at the same table.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CORE FLOW -->
+      <section class="home-section" id="flow">
+        <h2 class="hs-title ro">How it works</h2>
+        <p class="hs-sub ro">Four simple steps. No followers. No feeds. Just places.</p>
+
+        <div class="flow-steps">
+          <div class="flow-step ro">
+            <span class="f-num">01</span><div class="f-emoji">🗺️</div>
+            <b>Explore</b><p>Open the map and find a place with stories.</p>
+          </div>
+          <div class="flow-arrow a1">→</div>
+          <div class="flow-step ro">
+            <span class="f-num">02</span><div class="f-emoji">🔓</div>
+            <b>Discover</b><p>Walk close enough — and read who was here before you.</p>
+          </div>
+          <div class="flow-arrow a2">→</div>
+          <div class="flow-step ro">
+            <span class="f-num">03</span><div class="f-emoji">✍️</div>
+            <b>Leave</b><p>Write your own memory at this place, sealed until a chosen date.</p>
+          </div>
+          <div class="flow-arrow a3">→</div>
+          <div class="flow-step ro">
+            <span class="f-num">04</span><div class="f-emoji">🛤️</div>
+            <b>Continue</b><p>Someone else finds it later — and the story lives on.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- MAIN IDEA -->
+      <section class="home-section alt" id="idea">
+        <h2 class="hs-title ro">What if someone who thought like you<br />was here before you?</h2>
+
+        <div class="idea-wrap">
+          <div class="idea-mems">
+            <div class="mem-chip ro">
+              <span class="m-yr">2024</span>
+              <p>"I came here to clear my head. Everybody seemed to know the answer but me."</p>
+            </div>
+            <div class="idea-link ro">→</div>
+            <div class="mem-chip ro">
+              <span class="m-yr">2026</span>
+              <p>"Well. This is strange. I came here for the same reason."</p>
+            </div>
+          </div>
+          <p class="idea-tag ro">Same place. Same feeling. <b>Different time.</b></p>
+        </div>
+      </section>
+
+      <!-- PLACES REMEMBER -->
+      <section class="home-section" id="places-remember">
+        <h2 class="hs-title ro">Places remember.</h2>
+        <p class="hs-sub ro">A university bell tower doesn't forget who rang under it.</p>
+
+        <div class="univ ro">
+          <div class="univ-name">Presidency University</div>
+          <div class="univ-years">
+            <span>2023</span><span>2024</span><span>2025</span><span>2026</span>
+          </div>
+        </div>
+
+        <div class="univ-tl">
+          <div class="univ-mem ro">
+            <span class="u-yr">2023</span>
+            <p>Joined. Knew no one. Left a note by the library bench.</p>
+          </div>
+          <div class="univ-mem ro">
+            <span class="u-yr">2024</span>
+            <p>Met the people I now call home. Same bench, new voices.</p>
+          </div>
+          <div class="univ-mem ro">
+            <span class="u-yr">2025</span>
+            <p>First year done. It went by way too fast.</p>
+          </div>
+          <div class="univ-mem ro">
+            <span class="u-yr">2026</span>
+            <p>I'm the senior everyone asks for advice now. I read the note again.</p>
+          </div>
+        </div>
+
+        <div class="thennow">
+          <div class="tn-img then ro">
+            <div>
+              <div><span class="tn-year">Then</span></div>
+              <div class="tn-cap">2023 · just a bench and a lot of grey sky</div>
+            </div>
+          </div>
+          <div class="tn-arrow ro">➜</div>
+          <div class="tn-img now ro">
+            <div>
+              <div><span class="tn-year">Now</span></div>
+              <div class="tn-cap">2026 · buses, banners, and one very old bench</div>
+            </div>
+          </div>
+        </div>
+        <p class="thennow-foot ro">The people change. The place changes. <b>The memories remain.</b></p>
+      </section>
+
+      <!-- CONTINUE THE STORY -->
+      <section class="home-section" id="trail">
+        <h2 class="hs-title ro">One story, passed forward.</h2>
+        <p class="hs-sub ro">Each visitor at the same place reads the ones before, then adds their own.</p>
+
+        <div class="story-wrap">
+          <div class="story-line"></div>
+          <div class="story-node">
+            <div class="story-dot"></div>
+            <div class="story-p"><b>Ananya · 2024</b>"I came here alone. If anyone reads this someday — I hope you're not."</div>
+          </div>
+          <div class="story-node">
+            <div class="story-dot"></div>
+            <div class="story-p"><b>Arjun · 2025</b>"I found this message. I came alone too. Leaving mine for whoever's next."</div>
+          </div>
+          <div class="story-node">
+            <div class="story-dot"></div>
+            <div class="story-p"><b>Meera · 2026</b>"I found both of you. I'm not alone anymore."</div>
+          </div>
+        </div>
+        <p class="story-verdict ro">Three people. Three years. <b>One place.</b></p>
+      </section>
+
+      <!-- FINAL CTA -->
+      <section class="final-cta ro">
+        <p class="fc-eyebrow">Leave a Trace</p>
+        <h2>You were here.</h2>
+        <p class="fc-sub">Leave something behind for the next person who walks the same ground.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-xl" data-goto="explore">Explore the Map</button>
+          <button class="btn btn-ghost btn-xl" data-goto="leave">Leave a Trace</button>
+        </div>
+        <p class="fc-foot">Only people physically present at a place can read its sealed memories.<br />Everything stays until the day it's meant to be read.</p>
+      </section>
+
     </div>
   </section>
 
@@ -118,7 +314,7 @@
         <div class="auth-head">
           <div class="auth-icon">⏳</div>
           <h3 id="auth-title">Sign in</h3>
-          <p class="auth-sub" id="auth-sub">Bottles need an author. Sign in to drop yours.</p>
+          <p class="auth-sub" id="auth-sub">Traces need an author. Sign in to leave yours.</p>
         </div>
         <form id="auth-form" class="auth-form" autocomplete="off">
           <label>Email<input id="auth-username" type="email" placeholder="you@example.com" required /></label>
@@ -168,7 +364,8 @@
   <script src="js/explore.js?v=4"></script>
   <script src="js/place.js?v=4"></script>
   <script src="js/leave.js?v=4"></script>
-  <script src="js/traces.js?v=4"></script>
-  <script src="js/app.js?v=4"></script>
+  <script src="js/traces.js?v=5"></script>
+  <script src="js/app.js?v=5"></script>
+  <script src="js/home.js?v=5"></script>
 </body>
 </html>
