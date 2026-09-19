@@ -85,13 +85,37 @@ values ('capsule-media', 'capsule-media', true)
 on conflict (id) do update set public = true;
 
 drop policy if exists "capsule_media_insert" on storage.objects;
-create policy "capsule_media_insert" on storage.objects
-  for insert with check (bucket_id = 'capsule-media' and auth.uid() is not null);
-
 drop policy if exists "capsule_media_delete" on storage.objects;
-create policy "capsule_media_delete" on storage.objects
-  for delete using (bucket_id = 'capsule-media' and auth.uid() = owner);
-
 drop policy if exists "capsule_media_select" on storage.objects;
-create policy "capsule_media_select" on storage.objects
-  for select using (bucket_id = 'capsule-media');
+
+-- storage policies are created one-by-one so a partial failure
+-- (policy already exists) doesn't abort the whole script
+do $$
+begin
+  if not exists (
+    select 1 from pg_policies
+    where schemaname = 'storage' and tablename = 'objects'
+      and policyname = 'capsule_media_insert'
+  ) then
+    create policy "capsule_media_insert" on storage.objects
+      for insert with check (bucket_id = 'capsule-media' and auth.uid() is not null);
+  end if;
+
+  if not exists (
+    select 1 from pg_policies
+    where schemaname = 'storage' and tablename = 'objects'
+      and policyname = 'capsule_media_delete'
+  ) then
+    create policy "capsule_media_delete" on storage.objects
+      for delete using (bucket_id = 'capsule-media' and auth.uid() = owner);
+  end if;
+
+  if not exists (
+    select 1 from pg_policies
+    where schemaname = 'storage' and tablename = 'objects'
+      and policyname = 'capsule_media_select'
+  ) then
+    create policy "capsule_media_select" on storage.objects
+      for select using (bucket_id = 'capsule-media');
+  end if;
+end $$;
