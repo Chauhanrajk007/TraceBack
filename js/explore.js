@@ -160,23 +160,31 @@ const Explore = (() => {
     if (fly) map.flyTo([loc.lat, loc.lng], Math.max(map.getZoom(), 15), { duration: 1.2 });
   };
 
-  const locateMe = async () => {
+  const locateMe = async (opts = {}) => {
     if (locating) return;
     locating = true;
+    const silent = !!opts.silent;
     const btn = document.getElementById("locate-btn");
-    if (btn) {
+    if (btn && !silent) {
       btn.disabled = true;
       btn.textContent = "Finding your location…";
     }
-    UI.showToast("Finding your location… this can take a few seconds", false, true);
+    if (!silent) UI.showToast("Finding your location… this can take a few seconds", false, true);
     try {
       const loc = await Geo.getCurrentPosition();
       setUserLocation(loc);
-      UI.hideToast();
-      UI.showToast("You're placed on the map");
+      // After we know the user location, refresh map markers so distance/lock info updates.
+      setPlaces(placesData, memoriesData);
+      if (!silent) {
+        UI.hideToast();
+        UI.showToast("You're placed on the map");
+      }
     } catch (e) {
-      UI.hideToast();
-      UI.showToast(e.message, true);
+      if (!silent) {
+        UI.hideToast();
+        UI.showToast(e.message, true);
+      }
+      // If auto-locate silently fails, just leave map at the default center — no noise.
     } finally {
       locating = false;
       if (btn) {

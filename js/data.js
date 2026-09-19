@@ -64,7 +64,9 @@ const Data = (() => {
       lastSignup = { email, password, username };
       return { id: data.user.id, username: email, needsConfirmation: true };
     }
-    await ensureProfile(data.user.id, username, email);
+    // Session available immediately — cache it now so currentUser() works right away.
+    cachedSession = data.session;
+    await ensureProfile(data.user.id, username);
     return { id: data.user.id, username: email, needsConfirmation: false };
   };
 
@@ -98,10 +100,15 @@ const Data = (() => {
     const email = username.includes("@") ? username : `${username}@timebottle.local`;
     const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
     if (error) throw new Error(authMessage(error.message));
+    // Immediately update cachedSession — onAuthStateChange fires async so
+    // without this, currentUser() returns null right after login() resolves.
+    cachedSession = data.session;
+    await ensureProfile(data.user.id, username);
     return { id: data.user.id, username: email };
   };
 
   const logout = async () => {
+    cachedSession = null;
     await supabaseClient.auth.signOut();
   };
 

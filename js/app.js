@@ -50,6 +50,10 @@ const App = (() => {
       UI.showToast(e.message, true);
     }
 
+    // Auto-locate user on startup — silently so it doesn't block the rest of the app.
+    // The map will fly to their real location as soon as permission is granted.
+    Explore.locateMe({ silent: true });
+
     await loadAll();
   };
 
@@ -268,10 +272,10 @@ const App = (() => {
     $("locate-btn").addEventListener("click", () => Explore.locateMe());
     $("place-back").addEventListener("click", () => show("explore"));
     $("pick-cancel").addEventListener("click", () => Explore.setPickMode(false));
-    $("auth-btn").addEventListener("click", () => {
+    $("auth-btn").addEventListener("click", async () => {
       const user = Data.currentUser();
       if (user) {
-        Data.logout();
+        await Data.logout();
         UI.setAuthLabel();
         UI.showToast("Signed out");
         loadAll();
