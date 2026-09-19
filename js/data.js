@@ -22,6 +22,16 @@ const Data = (() => {
     } catch {
       cachedSession = null;
     }
+    purgeSeedData();
+  };
+
+  const purgeSeedData = () => {
+    try {
+      ["rtc_local_places", "rtc_local_memories", "rtc_local_links"].forEach((k) => {
+        const arr = getLocalItems(k).filter((x) => !String(x.id).startsWith("seed-") && x.place_id !== "seed-place-1");
+        localStorage.setItem(k, JSON.stringify(arr));
+      });
+    } catch (_) {}
   };
 
   const currentUser = () =>
@@ -45,8 +55,8 @@ const Data = (() => {
       options: { data: { username }, emailRedirectTo: window.location.origin }
     });
     if (error) throw new Error(authMessage(error.message));
-    const needsConfirmation = !data.session;
-    if (needsConfirmation) {
+    if (!data.user) throw new Error("Could not create account");
+    if (!data.session) {
       lastSignup = { email, password, username };
       return { id: data.user.id, username: email, needsConfirmation: true };
     }
@@ -85,8 +95,8 @@ const Data = (() => {
     const email = username.includes("@") ? username : `${username}@timebottle.local`;
     const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
     if (error) throw new Error(authMessage(error.message));
+    if (!data.session) throw new Error("Sign in succeeded but no session returned");
     cachedSession = data.session;
-    await ensureProfile(data.user.id, username);
     return { id: data.user.id, username: email };
   };
 
@@ -94,78 +104,6 @@ const Data = (() => {
     cachedSession = null;
     await supabaseClient.auth.signOut();
   };
-
-  // ---------- ONE test place (for dev/testing only) ----------
-  // Lat: 13.07970, Lng: 77.62050  — remove from here once real capsules exist
-  const SEED_PLACE = {
-    id: "seed-place-1",
-    name: "The Spot",
-    lat: 13.07970,
-    lng: 77.62050,
-    created_at: "2023-01-01T00:00:00Z"
-  };
-
-  const SEED_MEMORIES = [
-    {
-      id: "seed-mem-1",
-      place_id: "seed-place-1",
-      author_id: "seed-p1",
-      year: 2024,
-      note: "Came here alone. Stayed until sunrise. Didn't plan to — just kept sitting. Felt like the city had finally stopped talking.",
-      unlock_at: "2024-01-01T00:00:00Z",
-      lat: 13.07970,
-      lng: 77.62050,
-      photo_url: null,
-      created_at: "2024-01-01T00:00:00Z"
-    },
-    {
-      id: "seed-mem-2",
-      place_id: "seed-place-1",
-      author_id: "seed-p2",
-      year: 2025,
-      note: "Found a message someone left near here. I came alone too. Didn't know anyone else did the same thing. Now I feel less strange about it.",
-      unlock_at: "2025-01-01T00:00:00Z",
-      lat: 13.07975,
-      lng: 77.62055,
-      photo_url: null,
-      created_at: "2025-01-01T00:00:00Z"
-    },
-    {
-      id: "seed-mem-3",
-      place_id: "seed-place-1",
-      author_id: "seed-p3",
-      year: 2026,
-      note: "I found both of you. I almost didn't come today. Reading what you both left here — I think I needed this more than I knew.",
-      unlock_at: "2026-01-01T00:00:00Z",
-      lat: 13.07972,
-      lng: 77.62048,
-      photo_url: null,
-      created_at: "2026-01-01T00:00:00Z"
-    }
-  ];
-
-  const SEED_PROFILES = {
-    "seed-p1": "Person A",
-    "seed-p2": "Person B",
-    "seed-p3": "Person C"
-  };
-
-  const SEED_LINKS = [
-    {
-      id: "seed-link-1",
-      from_memory_id: "seed-mem-2",
-      to_memory_id: "seed-mem-1",
-      author_id: "seed-p2",
-      created_at: "2025-01-01T00:00:00Z"
-    },
-    {
-      id: "seed-link-2",
-      from_memory_id: "seed-mem-3",
-      to_memory_id: "seed-mem-2",
-      author_id: "seed-p3",
-      created_at: "2026-01-01T00:00:00Z"
-    }
-  ];
 
   // ---------- localStorage fallback ----------
   const LOCAL_PLACES_KEY = "rtc_local_places";
@@ -187,10 +125,9 @@ const Data = (() => {
 
   // ---------- profiles ----------
   const getDisplayName = (authorId) =>
-    profileCache[authorId] || SEED_PROFILES[authorId] || "Someone";
+    profileCache[authorId] || "Someone";
 
   const loadProfiles = async () => {
-    Object.assign(profileCache, SEED_PROFILES);
     if (!supabaseClient) return profileCache;
     try {
       const { data, error } = await supabaseClient.from("profiles").select("id, username");
@@ -210,7 +147,6 @@ const Data = (() => {
       } catch (_) {}
     }
     const map = new Map();
-    map.set(SEED_PLACE.id, SEED_PLACE);
     local.forEach((p) => map.set(p.id, p));
     remote.forEach((p) => map.set(p.id, { ...map.get(p.id), ...p }));
     return Array.from(map.values());
@@ -256,7 +192,6 @@ const Data = (() => {
       } catch (_) {}
     }
     const map = new Map();
-    SEED_MEMORIES.forEach((m) => map.set(m.id, m));
     local.forEach((m) => map.set(m.id, m));
     remote.forEach((m) => map.set(m.id, { ...map.get(m.id), ...m }));
     return Array.from(map.values()).sort((a, b) =>
@@ -344,7 +279,6 @@ const Data = (() => {
       } catch (_) {}
     }
     const map = new Map();
-    SEED_LINKS.forEach((l) => map.set(l.id, l));
     local.forEach((l) => map.set(l.id, l));
     remote.forEach((l) => map.set(l.id, l));
     return Array.from(map.values());
