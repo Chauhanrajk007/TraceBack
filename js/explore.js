@@ -3,23 +3,21 @@ const Explore = (() => {
   let layer = null;
   let userMarker = null;
   let userCircle = null;
-  let pinMarker = null;
   let currentLocation = null;
-  let capsules = [];
-  let onMapPick = null;
   let locating = false;
-  const authorCache = {};
+  let onMapPick = null;
+  let placesData = [];
+  let memoriesData = [];
 
   const init = async () => {
-    map = L.map("map", { zoomControl: true }).setView(CONFIG.MAP_CENTER, CONFIG.MAP_ZOOM);
+    map = L.map("map", { zoomControl: false }).setView(CONFIG.MAP_CENTER, CONFIG.MAP_ZOOM);
     addTiles(map);
     layer = L.layerGroup().addTo(map);
-    map.on("click", (e) => {
-      if (onMapPick) onMapPick(e.latlng.lat, e.latlng.lng);
-    });
-    L.control
-      .zoom({ position: "bottomleft" })
-      .addTo(map);
+    L.control.zoom({ position: "bottomleft" }).addTo(map);
+  };
+
+  const resize = () => {
+    if (map) setTimeout(() => map.invalidateSize(true), 50);
   };
 
   const resetView = () => {
@@ -31,7 +29,7 @@ const Explore = (() => {
       maxZoom: 19,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     });
-    const fallback = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png", {
+    const fallback = L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png", {
       maxZoom: 19,
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>'
     });
@@ -45,72 +43,77 @@ const Explore = (() => {
     });
   };
 
-  const getAuthor = async (id) => {
-    if (authorCache[id]) return authorCache[id];
-    authorCache[id] = await Data.getDisplayName(id);
-    return authorCache[id];
+  // aggregate memories per place
+  const stats = (placeId) => {
+    const ms = memoriesData.filter((m) => m.place_id === placeId);
+    const people = new Set(ms.map((m) => m.author_id)).size;
+    const years = ms.map((m) => m.year);
+    return {
+      count: ms.length,
+      people,
+      years: years.length ? [Math.min(...years), Math.max(...years)] : [new Date().getFullYear(), new Date().getFullYear()]
+    };
   };
 
-  const setCapsules = async (list) => {
-    capsules = list;
+  const setPlaces = (places, memories) => {
+    placesData = places || [];
+    memoriesData = memories || [];
     layer.clearLayers();
     if (userMarker) layer.addLayer(userMarker);
     if (userCircle) layer.addLayer(userCircle);
-    for (const c of list) {
-      const author = await getAuthor(c.author_id);
-      addMarker(c, author);
+
+    for (const p of placesData) {
+      const s = stats(p.id);
+      addPlaceMarker(p, s);
     }
-    updateCountBadge();
+    updateChip();
+
+    if (!placesData.length) {
+      UI.showToast("No traces yet — be the first to leave one.", false);
+    }
   };
 
-  const isMine = (c) => {
-    const user = Data.currentUser();
-    return user && c.author_id === user.id;
-  };
-
-  const addMarker = (c, author) => {
-    const opened = new Date(c.unlock_at).getTime() <= Date.now();
-    const mine = isMine(c);
+  const addPlaceMarker = (p, s) => {
+    const isNew = s.years[0] > new Date().getFullYear() - 5;
+    const html = `<div class="place-pin">📍<span class="pin-count">${s.count}</span></div>`;
     const icon = L.divIcon({
       className: "rtc-icon",
-      html: `<div class="rtc-marker ${opened ? "open" : "sealed"}">${opened ? "💌" : "🔒"}${mine ? '<span class="mine-tag"></span>' : ""}</div>`,
-      iconSize: [36, 36],
-      iconAnchor: [18, 18]
+      html,
+      iconSize: isNew ? [48, 48] : [42, 42],
+      iconAnchor: [24, 38]
     });
-    const marker = L.marker([c.lat, c.lng], { icon, title: c.title });
-    const hint = mine
-      ? `${c.title} (yours)`
-      : opened
-        ? `${c.title} — open`
-        : `${c.title} — opens ${Geo.fmtDate(c.unlock_at)}`;
-    marker.bindTooltip(hint, { direction: "top", offset: [0, -20], opacity: 0.95 });
-    marker.bindPopup(
-      `<div class="pop">
-        <div class="pop-title">${c.title}</div>
-        <div class="pop-meta">${opened ? "open" : "opens " + Geo.fmtDate(c.unlock_at)} &middot; by ${author}</div>
-        <button class="btn btn-primary btn-sm" id="pop-open-${c.id}">${mine ? "Preview" : opened ? "Open" : "View"}</button>
-      </div>`
-    );
+
+    const marker = L.marker([p.lat, p.lng], { icon });
+    marker.bindTooltip(p.name, { direction: "top", offset: [0, -34], opacity: 0.95 });
+
+    const yearRange = s.years[0] === s.years[1] ? `${s.years[0]}` : `${s.years[0]} → ${s.years[1]}`;
+    const popHtml = `
+      <div class="pop">
+        <div class="pop-title">${p.name}</div>
+        <div class="pop-meta">${s.people} ${s.people === 1 ? "person" : "people"} left traces here</div>
+        <div class="pop-meta">${yearRange}</div>
+        <button class="btn btn-primary btn-sm" id="pop-open-${p.id}">See What They Left</button>
+      </div>`;
+    marker.bindPopup(popHtml, { maxWidth: 220 });
     marker.on("popupopen", () => {
-      const btn = document.getElementById("pop-open-" + c.id);
-      if (btn) btn.onclick = () => openCapsule(c, author);
+      const btn = document.getElementById("pop-open-" + p.id);
+      if (btn) btn.onclick = () => { App.openPlace(p); };
     });
     layer.addLayer(marker);
   };
 
-  const openCapsule = async (c, author) => {
-    let loc = currentLocation;
-    if (!loc) {
-      try {
-        loc = await Geo.getCurrentPosition();
-        setUserLocation(loc, false);
-      } catch {
-        loc = null;
-      }
-    }
-    UI.renderCapsuleView(c, loc, author);
+  const updateChip = () => {
+    const chip = document.getElementById("map-chip");
+    if (!chip) return;
+    const total = memoriesData.length;
+    const people = new Set(memoriesData.map((m) => m.author_id)).size;
+    chip.hidden = false;
+    chip.textContent = total === 0
+      ? "no traces here yet — leave the first"
+      : `${total} trace${total === 1 ? "" : "s"} · ${people} ${people === 1 ? "place has" : "people have"} left traces`;
   };
 
+  // --------- user location ---------
   const setUserLocation = (loc, fly = true) => {
     currentLocation = loc;
     if (!map) return;
@@ -161,53 +164,39 @@ const Explore = (() => {
     }
   };
 
-  const setPin = (lat, lng) => {
-    if (!map) return;
-    if (pinMarker) pinMarker.remove();
-    pinMarker = L.marker([lat, lng], {
-      icon: L.divIcon({
-        className: "rtc-icon",
-        html: `<div class="pin-marker">📍</div>`,
-        iconSize: [38, 38],
-        iconAnchor: [19, 34]
-      })
-    }).addTo(map);
+  const getLocation = () => currentLocation;
+
+  // --------- pick mode (used by Leave) ---------
+  const setPickMode = (enabled, handler) => {
+    onMapPick = enabled ? handler : null;
+    const banner = document.getElementById("pick-banner");
+    if (banner) banner.hidden = !enabled;
+    if (map) map.getContainer().style.cursor = enabled ? "crosshair" : "";
+    if (enabled) {
+      map.on("click", pickHandler);
+    } else {
+      map.off("click", pickHandler);
+    }
   };
 
-  const clearPin = () => {
-    if (pinMarker) pinMarker.remove();
-    pinMarker = null;
+  const pickHandler = (e) => {
+    if (!onMapPick) return;
+    onMapPick(e.latlng.lat, e.latlng.lng);
   };
 
   const focusOn = (lat, lng, zoom = 15) => {
     if (map) map.flyTo([lat, lng], zoom, { duration: 1 });
   };
 
-  const setPickMode = (enabled, handler) => {
-    onMapPick = enabled ? handler || setPin : null;
-    if (enabled && map) map.getContainer().style.cursor = "crosshair";
-    if (!enabled && map) map.getContainer().style.cursor = "";
-  };
-
-  const updateCountBadge = () => {
-    const badge = document.getElementById("map-count");
-    if (badge) {
-      badge.hidden = false;
-      badge.textContent = capsules.length === 0
-        ? "nothing hidden here yet"
-        : `${capsules.length} bottle${capsules.length === 1 ? "" : "s"} waiting on this map`;
-    }
-  };
-
   return {
     init,
-    setCapsules,
-    locateMe,
-    setPin,
-    clearPin,
-    focusOn,
+    resize,
     resetView,
+    setPlaces,
+    locateMe,
+    getLocation,
+    setUserLocation,
     setPickMode,
-    refreshCapsules: setCapsules
+    focusOn
   };
 })();

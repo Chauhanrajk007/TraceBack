@@ -3,17 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TimeBottle — a message in a bottle, for a stranger</title>
+  <title>TimeBottle — someone was here before you</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⏳</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="css/style.css?v=3" />
+  <link rel="stylesheet" href="css/style.css?v=4" />
 </head>
 <body>
   <header class="topbar">
-    <div class="brand"><span class="logo">⏳</span>Time<b>Bottle</b></div>
+    <button class="brand" id="brand" title="Home"><span class="logo">⏳</span>Time<b>Bottle</b></button>
+
+    <nav class="nav">
+      <button class="nav-item" data-view="explore">Explore</button>
+      <button class="nav-item" data-view="leave">Leave</button>
+      <button class="nav-item" data-view="trails">Trails</button>
+      <button class="nav-item" data-view="traces">My Traces</button>
+    </nav>
+
     <div class="topbar-right">
       <span id="auth-label" class="auth-label" hidden></span>
       <button id="auth-btn" class="btn btn-ghost">Sign in</button>
@@ -21,32 +29,87 @@
   </header>
 
   <div id="setup-banner" class="banner" hidden></div>
-  <div id="map-count" class="map-count" hidden></div>
 
-  <main class="stage">
+  <!-- ============================= HOME ============================= -->
+  <section class="view" data-view="home">
+    <div class="hero-wrap">
+      <div class="hero">
+        <h1 class="hero-title">Someone was<br /><span>here before you.</span></h1>
+        <p class="hero-sub">Discover the people, memories, and stories hidden in the places around you.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-lg" id="home-explore">Explore the Map</button>
+          <button class="btn btn-ghost btn-lg" id="home-leave">Leave a Trace</button>
+        </div>
+        <p class="hero-places">A mountain. A college. A café.<br /><span>Different people. Different years. Same place.</span></p>
+      </div>
+
+      <div class="how">
+        <div class="how-step"><b>Explore</b><span>find a place</span></div>
+        <div class="how-arrow">→</div>
+        <div class="how-step"><b>Discover</b><span>read who was here</span></div>
+        <div class="how-arrow">→</div>
+        <div class="how-step"><b>Leave</b><span>write your own</span></div>
+        <div class="how-arrow">→</div>
+        <div class="how-step"><b>Continue</b><span>the story lives on</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ EXPLORE =========================== -->
+  <section class="view map-view" data-view="explore" hidden>
     <div id="map" class="map"></div>
+
+    <div class="map-chip" id="map-chip" hidden></div>
 
     <div class="fab">
       <button id="locate-btn" class="btn btn-primary fab-btn" title="Show my location">◎ My location</button>
-      <button id="deposit-open" class="btn btn-ghost fab-btn">＋ Drop a bottle</button>
     </div>
 
     <div class="legend">
-      <span class="lg"><i class="lg-dot sealed"></i>sealed</span>
-      <span class="lg"><i class="lg-dot open"></i>open</span>
+      <span class="lg"><i class="lg-dot place"></i>place</span>
       <span class="lg"><i class="lg-dot you"></i>you</span>
     </div>
 
-    <aside id="deposit-panel" class="panel" hidden>
-      <div class="panel-head">
-        <h2>Drop a bottle</h2>
-        <button id="deposit-close" class="icon-btn" title="Close">✕</button>
-      </div>
-      <p class="hint">Write today down, pick a spot on the map, choose when it opens. Anyone standing at that spot after that day finds it.</p>
-      <div id="deposit-form"></div>
-    </aside>
-  </main>
+    <div class="pick-banner" id="pick-banner" hidden>
+      <span>Tap anywhere on the map to choose a place</span>
+      <button class="btn btn-ghost btn-sm" id="pick-cancel">Cancel</button>
+    </div>
+  </section>
 
+  <!-- ========================= PLACE PAGE =========================== -->
+  <section class="view scroll-view" data-view="place" hidden>
+    <div class="page-head">
+      <button class="btn btn-ghost btn-sm" id="place-back">← Back</button>
+    </div>
+    <div id="place-body"></div>
+  </section>
+
+  <!-- ========================= LEAVE A TRACE ======================== -->
+  <section class="view scroll-view" data-view="leave" hidden>
+    <div class="leave-wrap" id="leave-body"></div>
+  </section>
+
+  <!-- ============================= TRAILS =========================== -->
+  <section class="view scroll-view" data-view="trails" hidden>
+    <div class="page-head">
+      <h1>Trails</h1>
+    </div>
+    <div class="stub card">
+      <div class="stub-icon">🛤️</div>
+      <h3>Connected stories are on the way</h3>
+      <p>When people keep answering each other at the same place, their memories form a trail. Soon you'll be able to follow one — find the people, stories, and then-and-now of a place.</p>
+    </div>
+  </section>
+
+  <!-- ========================== MY TRACES =========================== -->
+  <section class="view scroll-view" data-view="traces" hidden>
+    <div class="page-head">
+      <h1>My Traces</h1>
+    </div>
+    <div id="traces-body"></div>
+  </section>
+
+  <!-- ============================= AUTH ============================= -->
   <div id="modal-auth" class="modal" hidden>
     <div class="modal-card">
       <button class="modal-close" data-close="modal-auth">✕</button>
@@ -94,23 +157,18 @@
     </div>
   </div>
 
-  <div id="modal-capsule" class="modal" hidden>
-    <div class="modal-card wide">
-      <button class="modal-close" data-close="modal-capsule">✕</button>
-      <div id="capsule-body"></div>
-    </div>
-  </div>
-
   <div id="toast" class="toast" hidden></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js?v=3"></script>
-  <script src="js/data.js?v=3"></script>
-  <script src="js/geo.js?v=3"></script>
-  <script src="js/ui.js?v=3"></script>
-  <script src="js/explore.js?v=3"></script>
-  <script src="js/deposit.js?v=3"></script>
-  <script src="js/app.js?v=3"></script>
+  <script src="js/config.js?v=4"></script>
+  <script src="js/geo.js?v=4"></script>
+  <script src="js/data.js?v=4"></script>
+  <script src="js/ui.js?v=4"></script>
+  <script src="js/explore.js?v=4"></script>
+  <script src="js/place.js?v=4"></script>
+  <script src="js/leave.js?v=4"></script>
+  <script src="js/traces.js?v=4"></script>
+  <script src="js/app.js?v=4"></script>
 </body>
 </html>

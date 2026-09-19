@@ -1,9 +1,8 @@
 -- TimeBottle · run this ONCE in the Supabase SQL Editor
 -- https://supabase.com/dashboard → your project → SQL Editor
 --
--- Optional: for instant sign-in (no email confirmation step),
--- go to Authentication → Providers → Email → turn OFF "Confirm email".
--- Sign-ups will then log you in immediately.
+-- Recommended: Authentication → Providers → Email → turn OFF "Confirm email"
+-- so sign-ups log you in immediately.
 
 -- 1) profiles table (display names, one row per auth user)
 create table if not exists public.profiles (
@@ -12,37 +11,80 @@ create table if not exists public.profiles (
   created_at timestamptz not null default now()
 );
 
--- 2) capsules table
-create table if not exists public.capsules (
+-- 2) places — a physical spot people share (mountain, college, cafe…)
+create table if not exists public.places (
   id uuid primary key default gen_random_uuid(),
+  name text not null,
+  lat double precision not null,
+  lng double precision not null,
+  created_at timestamptz not null default now()
+);
+
+-- 3) memories — one person's trace, locked to a place and a time
+create table if not exists public.memories (
+  id uuid primary key default gen_random_uuid(),
+  place_id uuid not null references public.places (id) on delete cascade,
   author_id uuid not null references auth.users (id) on delete cascade,
-  title text not null,
   note text,
   lat double precision not null,
   lng double precision not null,
+  year integer not null,
   unlock_at timestamptz not null,
   photo_url text,
-  audio_url text,
+  created_at timestamptz not null default now()
+);
+
+-- 4) links — one memory continuing another (a trail)
+create table if not exists public.links (
+  id uuid primary key default gen_random_uuid(),
+  from_memory_id uuid not null references public.memories (id) on delete cascade,
+  to_memory_id uuid not null references public.memories (id) on delete cascade,
+  author_id uuid not null references auth.users (id) on delete cascade,
   created_at timestamptz not null default now()
 );
 
 grant usage on schema public to anon, authenticated;
-grant all on public.capsules to anon, authenticated;
+grant all on public.places to anon, authenticated;
+grant all on public.memories to anon, authenticated;
+grant all on public.links to anon, authenticated;
 grant all on public.profiles to anon, authenticated;
 
--- anyone may read capsules (they are only revealed client-side by GPS/time)
-alter table public.capsules enable row level security;
-drop policy if exists "capsules_select_all" on public.capsules;
-create policy "capsules_select_all" on public.capsules
+-- places: readable by all, only signed-in users may create
+alter table public.places enable row level security;
+drop policy if exists "places_select_all" on public.places;
+create policy "places_select_all" on public.places
   for select using (true);
 
--- only the author may insert/update/delete their own
-drop policy if exists "capsules_insert_own" on public.capsules;
-create policy "capsules_insert_own" on public.capsules
+drop policy if exists "places_insert_auth" on public.places;
+create policy "places_insert_auth" on public.places
+  for insert with check (auth.uid() is not null);
+
+-- memories: readable by all (revealed client-side by GPS/time), writable by author
+alter table public.memories enable row level security;
+drop policy if exists "memories_select_all" on public.memories;
+create policy "memories_select_all" on public.memories
+  for select using (true);
+
+drop policy if exists "memories_insert_own" on public.memories;
+create policy "memories_insert_own" on public.memories
   for insert with check (auth.uid() = author_id);
 
-drop policy if exists "capsules_delete_own" on public.capsules;
-create policy "capsules_delete_own" on public.capsules
+drop policy if exists "memories_delete_own" on public.memories;
+create policy "memories_delete_own" on public.memories
+  for delete using (auth.uid() = author_id);
+
+-- links: readable by all, writable by author
+alter table public.links enable row level security;
+drop policy if exists "links_select_all" on public.links;
+create policy "links_select_all" on public.links
+  for select using (true);
+
+drop policy if exists "links_insert_own" on public.links;
+create policy "links_insert_own" on public.links
+  for insert with check (auth.uid() = author_id);
+
+drop policy if exists "links_delete_own" on public.links;
+create policy "links_delete_own" on public.links
   for delete using (auth.uid() = author_id);
 
 -- profiles readable by all, editable only by the owner
@@ -79,7 +121,7 @@ create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
 
--- 3) storage bucket for photos + audio (public so stangers can visit media)
+-- 5) storage bucket for photos (public so strangers can visit media)
 insert into storage.buckets (id, name, public)
 values ('capsule-media', 'capsule-media', true)
 on conflict (id) do update set public = true;

@@ -1,5 +1,6 @@
 const App = (() => {
   const $ = (id) => document.getElementById(id);
+  let pendingLeavePlace = null;
 
   const init = async () => {
     try {
@@ -10,40 +11,59 @@ const App = (() => {
       banner.innerHTML = `⚠️ ${e.message}`;
       return;
     }
-    bindAuth();
     UI.bindModalClosers();
     UI.setAuthLabel();
-
-    await Explore.init();
-    await refreshCapsules();
-    Deposit.renderForm();
+    bindAuth();
     bindActions();
+    await Explore.init();
+
+    await loadAll();
+    show("home");
   };
 
-  const bindActions = () => {
-    $("deposit-open").addEventListener("click", () => Deposit.showPanel());
-    $("deposit-close").addEventListener("click", () => Deposit.hidePanel());
-    $("locate-btn").addEventListener("click", () => Explore.locateMe());
-    $("auth-btn").addEventListener("click", () => {
-      const user = Data.currentUser();
-      if (user) {
-        Data.logout();
-        UI.setAuthLabel();
-        UI.showToast("Signed out");
-        refreshEverything();
-      } else {
-        App.openAuthModal();
-      }
+  // --------- router ---------
+  const views = () => Array.from(document.querySelectorAll("[data-view]"));
+
+  const show = (view) => {
+    views().forEach((v) => {
+      v.hidden = v.dataset.view !== view;
+      if (v.hidden) v.style.display = "";
+      else v.style.display = "block";
     });
+    document.querySelectorAll(".nav-item").forEach((n) => {
+      n.classList.toggle("active", n.dataset.view === view);
+    });
+    if (view === "explore") Explore.resize();
+    if (view === "traces") Traces.refresh();
   };
 
+  // --------- data ---------
+  const loadAll = async () => {
+    try {
+      await Data.loadProfiles();
+      const [places, memories] = await Promise.all([Data.listPlaces(), Data.listMemories()]);
+      Explore.setPlaces(places, memories);
+    } catch (e) {
+      const toast = document.getElementById("toast");
+      if (!toast.classList.contains("loading")) UI.showToast(e.message, true);
+    }
+  };
+
+  const openPlace = (place) => Place.show(place);
+
+  const startLeave = (preset) => {
+    if (!Data.currentUser()) {
+      pendingLeavePlace = preset || null;
+      openAuthModal();
+      return;
+    }
+    Leave.open(preset);
+  };
+
+  // --------- auth ---------
   const openAuthModal = () => {
-    UI.closeModal("modal-auth");
-    // reset to sign-in state so the confirm-password field never leaks into login
-    const formView = $("auth-view-form");
-    const verifyView = $("auth-view-verify");
-    formView.hidden = false;
-    verifyView.hidden = true;
+    $("auth-view-form").hidden = false;
+    $("auth-view-verify").hidden = true;
     $("auth-title").textContent = "Sign in";
     $("auth-sub").textContent = "Bottles need an author. Sign in to drop yours.";
     $("auth-submit").textContent = "Sign in";
@@ -126,11 +146,16 @@ const App = (() => {
           submitBtn.disabled = true;
           submitBtn.textContent = "Signing in…";
           await Data.login(username, password);
-          UI.showToast("Welcome back, time traveler");
+          UI.showToast("Welcome back");
         }
         resetAuthModal();
         UI.setAuthLabel();
-        refreshEverything();
+        loadAll();
+        if (pendingLeavePlace) {
+          const preset = pendingLeavePlace;
+          pendingLeavePlace = null;
+          Leave.open(preset);
+        }
       } catch (e2) {
         err.textContent = e2.message;
         err.hidden = false;
@@ -154,10 +179,10 @@ const App = (() => {
     $("verify-done").addEventListener("click", async () => {
       try {
         await Data.completeSignup();
-        UI.showToast("You're in. Drop a bottle — the future is listening.");
+        UI.showToast("You're in. Leave a trace — the future is listening.");
         resetAuthModal();
         UI.setAuthLabel();
-        refreshEverything();
+        loadAll();
       } catch (e) {
         hint(e.message);
       }
@@ -178,31 +203,39 @@ const App = (() => {
       const isSignup = isSignupMode();
       setSignupFieldVisibility(!isSignup);
       $("auth-title").textContent = isSignup ? "Sign in" : "Create account";
-      $("auth-sub").textContent = isSignup ? "Bottles need an author. Sign in to drop yours." : "Join to drop your first bottle.";
+      $("auth-sub").textContent = isSignup ? "Bottles need an author. Sign in to drop yours." : "Join to leave your first trace.";
       $("auth-submit").textContent = isSignup ? "Sign in" : "Create account";
       $("auth-toggle").textContent = isSignup ? "New here? Create an account" : "Already have an account? Sign in";
       $("auth-err").hidden = true;
     });
   };
 
-  const refreshCapsules = async () => {
-    try {
-      const caps = await Data.listCapsules();
-      await Explore.refreshCapsules(caps);
-    } catch (e) {
-      const toast = document.getElementById("toast");
-      // don't clobber an active sticky toast (e.g. "Finding your location…")
-      if (toast && !toast.classList.contains("loading")) {
-        UI.showToast(e.message, true);
+  // --------- nav / actions ---------
+  const bindActions = () => {
+    document.querySelectorAll(".nav-item").forEach((btn) => {
+      btn.addEventListener("click", () => show(btn.dataset.view));
+    });
+    $("brand").addEventListener("click", () => show("home"));
+    $("home-explore").addEventListener("click", () => show("explore"));
+    $("home-leave").addEventListener("click", () => startLeave(null));
+    $("locate-btn").addEventListener("click", () => Explore.locateMe());
+    $("place-back").addEventListener("click", () => show("explore"));
+    $("pick-cancel").addEventListener("click", () => Explore.setPickMode(false));
+    $("auth-btn").addEventListener("click", () => {
+      const user = Data.currentUser();
+      if (user) {
+        Data.logout();
+        UI.setAuthLabel();
+        UI.showToast("Signed out");
+        loadAll();
+        show("home");
+      } else {
+        openAuthModal();
       }
-    }
+    });
   };
 
-  const refreshEverything = async () => {
-    await refreshCapsules();
-  };
-
-  return { init, refreshCapsules, refreshEverything, openAuthModal };
+  return { init, show, openPlace, startLeave, openAuthModal, loadAll };
 })();
 
 document.addEventListener("DOMContentLoaded", () => App.init());
