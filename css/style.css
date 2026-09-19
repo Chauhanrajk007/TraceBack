@@ -260,9 +260,13 @@ textarea { resize: vertical; min-height: 90px; }
 }
 .modal-close:hover { color: var(--text); }
 
-.modal-card h3 { font-size: 20px; margin-bottom: 18px; }
+.modal-card h3 { font-size: 20px; margin: 0; }
 
-.auth-form { display: grid; gap: 14px; }
+.auth-head { text-align: center; margin-bottom: 20px; display: grid; gap: 4px; justify-items: center; }
+.auth-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 6px; }
+.auth-sub { color: var(--muted); font-size: 13px; margin: 0; }
+
+.auth-form { display: grid; gap: 12px; }
 .auth-form label { display: grid; gap: 6px; font-size: 13px; color: var(--muted); font-weight: 600; }
 .auth-form input {
   background: var(--surface-2);

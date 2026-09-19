@@ -43,10 +43,14 @@
   <div id="modal-auth" class="modal" hidden>
     <div class="modal-card">
       <button class="modal-close" data-close="modal-auth">✕</button>
-      <h3 id="auth-title">Sign in</h3>
-      <form id="auth-form" autocomplete="off">
-        <label>Username or email<input id="auth-username" type="text" required /></label>
-        <label>Password<input id="auth-password" type="password" required /></label>
+      <div class="auth-head">
+        <div class="auth-icon">⏳</div>
+        <h3 id="auth-title">Sign in</h3>
+        <p class="auth-sub" id="auth-sub">Bottles need an author. Sign in to drop yours.</p>
+      </div>
+      <form id="auth-form" class="auth-form" autocomplete="off">
+        <label>Email<input id="auth-username" type="text" placeholder="you@example.com" required /></label>
+        <label>Password<input id="auth-password" type="password" placeholder="••••••••" required /></label>
         <div id="auth-err" class="form-err" hidden></div>
         <button class="btn btn-primary" type="submit" id="auth-submit">Sign in</button>
         <button class="btn-link" type="button" id="auth-toggle">New here? Create an account</button>
@@ -65,7 +69,7 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js"></script>
+  <script src="js/config.js?v=2"></script>
   <script src="js/data.js"></script>
   <script src="js/geo.js"></script>
   <script src="js/ui.js"></script>

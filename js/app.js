@@ -58,6 +58,7 @@ const App = (() => {
         UI.closeModal("modal-auth");
         $("auth-form").reset();
         $("auth-title").textContent = "Sign in";
+        $("auth-sub").textContent = "Bottles need an author. Sign in to drop yours.";
         $("auth-submit").textContent = "Sign in";
         $("auth-toggle").textContent = "New here? Create an account";
         UI.setAuthLabel();
@@ -71,6 +72,7 @@ const App = (() => {
     $("auth-toggle").addEventListener("click", () => {
       const isSignup = $("auth-title").textContent === "Sign in";
       $("auth-title").textContent = isSignup ? "Create account" : "Sign in";
+      $("auth-sub").textContent = isSignup ? "Join to drop your first bottle." : "Bottles need an author. Sign in to drop yours.";
       $("auth-submit").textContent = isSignup ? "Create account" : "Sign in";
       $("auth-toggle").textContent = isSignup ? "Already have an account? Sign in" : "New here? Create an account";
     });
