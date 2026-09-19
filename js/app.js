@@ -276,25 +276,25 @@ const App = (() => {
     // Plans modal
     $("plans-btn").addEventListener("click", () => UI.openModal("modal-plans"));
 
-    // Razorpay payment buttons
+    // Razorpay payment buttons (one-time purchase)
     document.querySelectorAll(".razorpay-btn").forEach((btn) => {
       btn.addEventListener("click", () => {
         const user = Data.currentUser();
-        if (!user) { UI.showToast("Sign in first to upgrade your plan.", true); return; }
+        if (!user) { UI.showToast("Sign in first to buy a plan.", true); return; }
+        if (!window.Razorpay) { UI.showToast("Payment gateway loading…try again.", true); return; }
         const amount = parseInt(btn.dataset.amount, 10);
-        const plan = btn.dataset.plan;
-        if (!window.Razorpay) { UI.showToast("Payment gateway loading…", true); return; }
+        const label = btn.dataset.label || btn.dataset.plan;
         const options = {
-          key: "rzp_test_REPLACE_WITH_YOUR_KEY", // ← put your Razorpay key here
+          key: CONFIG.RAZORPAY_KEY_ID,
           amount,
           currency: "INR",
           name: "Leave a Trace",
-          description: plan === "explorer" ? "Explorer Plan — ₹99/month" : "Legacy Plan — ₹299/month",
+          description: label,
           image: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>",
           prefill: { email: user.username },
           theme: { color: "#315efb" },
           handler: () => {
-            UI.showToast(`🎉 Welcome to ${plan === "explorer" ? "Explorer" : "Legacy"} plan!`);
+            UI.showToast(`🎉 ${label} unlocked! Your storage has been upgraded.`);
             UI.closeModal("modal-plans");
           }
         };

@@ -1,6 +1,9 @@
 const CONFIG = {
   SUPABASE_URL: "https://kdrocrjvnjvnzqvfnyjn.supabase.co",
   SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtkcm9jcmp2bmp2bnpxdmZueWpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk4MTYzMDMsImV4cCI6MjEwNTM5MjMwM30.H73Wizs-RfsxB27_obTCVRfJeGuhHEgpWiLNC5iWHUY",
+  // Razorpay public key — safe to put here, this is the key ID (not secret)
+  // RAZORPAY_KEY_SECRET must NEVER go in frontend code. Keep it only in Vercel env vars.
+  RAZORPAY_KEY_ID: "rzp_live_PASTE_YOUR_KEY_ID_HERE",
   UNLOCK_RADIUS_METERS: 100,
   PLACE_RADIUS_METERS: 100,
   MAP_CENTER: [20.5937, 78.9629],
