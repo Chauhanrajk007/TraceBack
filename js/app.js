@@ -80,7 +80,6 @@ const App = (() => {
     });
     if (view === "explore") Explore.resize();
     if (view === "traces") Traces.refresh();
-    if (view === "leave") Leave.open();
     window.scrollTo({ top: 0, behavior: "instant" });
   };
 
@@ -277,7 +276,13 @@ const App = (() => {
   // --------- nav / actions ---------
   const bindActions = () => {
     document.querySelectorAll(".nav-item[data-view], .bnav-item[data-view]").forEach((btn) => {
-      btn.addEventListener("click", () => show(btn.dataset.view));
+      btn.addEventListener("click", () => {
+        if (btn.dataset.view === "leave") {
+          startLeave();
+        } else {
+          show(btn.dataset.view);
+        }
+      });
     });
     const brand = $("brand");
     if (brand) brand.addEventListener("click", () => show("home"));
@@ -285,6 +290,10 @@ const App = (() => {
     if (locateBtn) locateBtn.addEventListener("click", () => Explore.locateMe());
     const placeBack = $("place-back");
     if (placeBack) placeBack.addEventListener("click", () => show("explore"));
+    const leaveBack = $("leave-back");
+    if (leaveBack) leaveBack.addEventListener("click", () => show("explore"));
+    const dashBack = $("dash-back");
+    if (dashBack) dashBack.addEventListener("click", () => show("explore"));
 
     // Drop capsule here — always works from map
     const dropBtn = $("drop-capsule-btn");
@@ -295,33 +304,75 @@ const App = (() => {
       });
     }
 
-    // Plans modal UI updater
+    // Plans modal UI updater — supports prorated upgrade credits
     const updatePlansModalUI = () => {
       const current = Data.getCurrentPlan();
-      document.querySelectorAll(".plan-card").forEach((card) => {
-        const btn = card.querySelector("button");
-        if (!btn) return;
-        if (card.classList.contains("plan-free")) {
-          btn.textContent = current === "free" ? "Current Plan" : "Free Tier";
-          btn.disabled = current === "free";
-        } else if (card.classList.contains("plan-explorer")) {
-          if (current === "explorer" || current === "legacy") {
-            btn.textContent = "✓ Activated";
+      const freeCard = document.querySelector(".plan-card.plan-free");
+      const explorerCard = document.querySelector(".plan-card.plan-explorer");
+      const legacyCard = document.querySelector(".plan-card.plan-legacy");
+
+      if (freeCard) {
+        const btn = freeCard.querySelector("button");
+        if (btn) {
+          btn.textContent = current === "free" ? "Current Plan" : "Included";
+          btn.disabled = true;
+        }
+      }
+
+      if (explorerCard) {
+        const btn = explorerCard.querySelector("button");
+        if (btn) {
+          if (current === "explorer") {
+            btn.textContent = "✓ Current Plan";
             btn.disabled = true;
+            btn.className = "btn btn-ghost";
+          } else if (current === "legacy") {
+            btn.textContent = "✓ Included in Legacy";
+            btn.disabled = true;
+            btn.className = "btn btn-ghost";
           } else {
             btn.textContent = "Buy Explorer";
             btn.disabled = false;
-          }
-        } else if (card.classList.contains("plan-legacy")) {
-          if (current === "legacy") {
-            btn.textContent = "✓ Activated";
-            btn.disabled = true;
-          } else {
-            btn.textContent = "Buy Legacy";
-            btn.disabled = false;
+            btn.className = "btn btn-primary razorpay-btn";
           }
         }
-      });
+      }
+
+      if (legacyCard) {
+        const btn = legacyCard.querySelector("button");
+        const priceEl = legacyCard.querySelector(".plan-price");
+        if (current === "legacy") {
+          if (btn) {
+            btn.textContent = "✓ Active Plan";
+            btn.disabled = true;
+            btn.className = "btn btn-ghost";
+          }
+          if (priceEl) priceEl.innerHTML = "₹999";
+        } else if (current === "explorer") {
+          // UPGRADE CREDIT: Deduct the ₹499 already spent on Explorer!
+          // ₹999 - ₹499 = ₹500
+          if (priceEl) {
+            priceEl.innerHTML = `<s>₹999</s> ₹500 <span class="upgrade-credit-badge">₹499 credit off</span>`;
+          }
+          if (btn) {
+            btn.textContent = "Upgrade to Legacy for ₹500";
+            btn.dataset.amount = "50000"; // 500 INR in paise
+            btn.dataset.label = "Upgrade to Legacy (50 GB) — ₹499 credit applied";
+            btn.disabled = false;
+            btn.className = "btn btn-primary razorpay-btn";
+          }
+        } else {
+          // Standard full price
+          if (priceEl) priceEl.innerHTML = "₹999";
+          if (btn) {
+            btn.textContent = "Buy Legacy";
+            btn.dataset.amount = "99900";
+            btn.dataset.label = "Legacy Pack — 50 GB Storage";
+            btn.disabled = false;
+            btn.className = "btn btn-primary razorpay-btn";
+          }
+        }
+      }
     };
 
     // Plans modal

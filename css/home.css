@@ -214,6 +214,7 @@
   text-align: center;
   padding: clamp(60px, 12vh, 120px) 0 clamp(48px, 9vh, 90px);
   position: relative;
+  background: radial-gradient(ellipse at 50% 30%, rgba(49, 94, 251, 0.07) 0%, rgba(49, 94, 251, 0) 70%);
 }
 .home-hero h1 {
   font-family: "Fraunces", "Inter", serif;
@@ -232,7 +233,16 @@
   margin: 0 auto 34px;
 }
 .hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-.btn-xl { padding: 14px 28px; font-size: 15.5px; border-radius: 14px; }
+.btn-xl {
+  padding: 14px 28px;
+  font-size: 15.5px;
+  border-radius: 14px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+.btn-xl:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(49, 94, 251, 0.25);
+}
 
 .scroll-hint {
   margin-top: 56px;
