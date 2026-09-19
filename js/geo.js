@@ -29,22 +29,15 @@ const Geo = (() => {
     if (!navigator.geolocation) {
       throw new Error("Geolocation is not supported by this browser");
     }
-    // GPS takes a moment. Try high accuracy first; only fall back to
-    // tower/WiFi-based position as a last resort.
-    const attempts = [
-      { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 },
-      { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 },
-      { enableHighAccuracy: false, timeout: 15000, maximumAge: 60000 }
-    ];
-    let lastErr = null;
-    for (const opts of attempts) {
-      try {
-        return await locate(opts);
-      } catch (e) {
-        lastErr = e;
-      }
-    }
-    throw new Error("Could not get your location: " + messageFor(lastErr));
+    // Single high-accuracy attempt — never fall back to low-accuracy tower/WiFi
+    // so we never return a random-seeming coarse location.
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude, accuracy: pos.coords.accuracy || 0 }),
+        (err) => reject(new Error("Could not get your location: " + messageFor(err))),
+        { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 }
+      );
+    });
   };
 
   const messageFor = (err) => {

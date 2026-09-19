@@ -50,10 +50,6 @@ const App = (() => {
       UI.showToast(e.message, true);
     }
 
-    // Auto-locate user on startup — silently so it doesn't block the rest of the app.
-    // The map will fly to their real location as soon as permission is granted.
-    Explore.locateMe({ silent: true });
-
     await loadAll();
   };
 

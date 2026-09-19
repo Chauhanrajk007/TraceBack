@@ -72,10 +72,14 @@ const Explore = (() => {
     }
     updateChip();
 
+    // Fit to all valid places only if user hasn't already set their location.
     if (placesData.length && !currentLocation && map) {
       try {
-        const bounds = L.latLngBounds(placesData.map((p) => [p.lat, p.lng]));
-        map.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
+        const valid = placesData.filter((p) => isFinite(p.lat) && isFinite(p.lng));
+        if (valid.length) {
+          const bounds = L.latLngBounds(valid.map((p) => [p.lat, p.lng]));
+          map.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
+        }
       } catch (_) {}
     }
 
