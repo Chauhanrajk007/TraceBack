@@ -8,13 +8,17 @@ const Explore = (() => {
   let onMapPick = null;
   let placesData = [];
   let memoriesData = [];
+  let ready = false;
 
   const init = async () => {
     map = L.map("map", { zoomControl: false }).setView(CONFIG.MAP_CENTER, CONFIG.MAP_ZOOM);
     addTiles(map);
     layer = L.layerGroup().addTo(map);
     L.control.zoom({ position: "bottomleft" }).addTo(map);
+    ready = true;
   };
+
+  const mapReady = () => ready;
 
   const resize = () => {
     if (map) setTimeout(() => map.invalidateSize(true), 50);
@@ -201,6 +205,7 @@ const Explore = (() => {
 
   return {
     init,
+    mapReady,
     resize,
     resetView,
     setPlaces,

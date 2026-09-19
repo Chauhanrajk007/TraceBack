@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="css/style.css?v=6" />
-  <link rel="stylesheet" href="css/home.css?v=6" />
+  <link rel="stylesheet" href="css/style.css?v=7" />
+  <link rel="stylesheet" href="css/home.css?v=7" />
 </head>
 <body>
   <header class="topbar">
@@ -37,9 +37,6 @@
 
     <div class="o-world">
       <div class="o-grid"></div>
-      <svg class="o-path" viewBox="0 0 100 100" preserveAspectRatio="none">
-        <path d="M20 30 C 34 22, 44 30, 55 34 S 48 66, 36 64 S 60 44, 72 56" />
-      </svg>
       <div class="o-point"></div>
       <div class="o-ring"></div>
 
@@ -170,81 +167,6 @@
         </div>
       </section>
 
-      <!-- PLACES REMEMBER -->
-      <section class="home-section" id="places-remember">
-        <h2 class="hs-title ro">Places remember.</h2>
-        <p class="hs-sub ro">You aren't just seeing a place anymore — you're seeing the people who lived parts of their lives there before you.</p>
-
-        <div class="univ ro">
-          <div class="univ-name">A College</div>
-          <div class="univ-spots">
-            <span>Library</span><span>Cafeteria</span><span>Classroom</span><span>Ground</span><span>Hostel</span><span>a favorite bench</span>
-          </div>
-          <div class="univ-years">
-            <span>2023</span><span>2024</span><span>2025</span><span>2026</span>
-          </div>
-        </div>
-
-        <div class="univ-tl">
-          <div class="univ-mem ro">
-            <span class="u-yr">2023</span>
-            <p>"First day here. Didn't know anyone."</p>
-          </div>
-          <div class="univ-mem ro">
-            <span class="u-yr">2024</span>
-            <p>"Finally found my people."</p>
-          </div>
-          <div class="univ-mem ro">
-            <span class="u-yr">2025</span>
-            <p>"Graduating soon. Can't believe it's already over."</p>
-          </div>
-          <div class="univ-mem ro">
-            <span class="u-yr">2026</span>
-            <p>"I'm reading this as a junior. I wonder what this place will be like when I graduate."</p>
-          </div>
-        </div>
-
-        <div class="thennow">
-          <div class="tn-img then ro">
-            <div>
-              <div><span class="tn-year">Then</span></div>
-              <div class="tn-cap">2023 · This area used to be empty.</div>
-            </div>
-          </div>
-          <div class="tn-arrow ro">➜</div>
-          <div class="tn-img now ro">
-            <div>
-              <div><span class="tn-year">Now</span></div>
-              <div class="tn-cap">2026 · There's a building here now.</div>
-            </div>
-          </div>
-        </div>
-        <p class="thennow-foot ro">The people change. The place changes. <b>The memories remain.</b></p>
-      </section>
-
-      <!-- CONTINUE THE STORY -->
-      <section class="home-section" id="trail">
-        <h2 class="hs-title ro">One story, passed forward.</h2>
-        <p class="hs-sub ro">Each visitor at the same place reads the ones before, then adds their own.</p>
-
-        <div class="story-wrap">
-          <div class="story-line"></div>
-          <div class="story-node">
-            <div class="story-dot"></div>
-            <div class="story-p"><b>Ananya · 2024</b>"I came here alone. If anyone reads this someday — I hope you're not."</div>
-          </div>
-          <div class="story-node">
-            <div class="story-dot"></div>
-            <div class="story-p"><b>Arjun · 2025</b>"I found this message. I came alone too. Leaving mine for whoever's next."</div>
-          </div>
-          <div class="story-node">
-            <div class="story-dot"></div>
-            <div class="story-p"><b>Meera · 2026</b>"I found both of you. I'm not alone anymore."</div>
-          </div>
-        </div>
-        <p class="story-verdict ro">Three people. Three years. <b>One place.</b></p>
-      </section>
-
       <!-- FINAL CTA -->
       <section class="final-cta ro">
         <p class="fc-eyebrow">Leave a Trace</p>
@@ -370,16 +292,27 @@
   <div id="toast" class="toast" hidden></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    if (!window.L) {
+      var ls = document.createElement("script");
+      ls.src = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js";
+      ls.onload = function () {
+        window.__rtcLeafletReady = true;
+        if (window.__rtcInitMap) window.__rtcInitMap();
+      };
+      document.head.appendChild(ls);
+    }
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js?v=6"></script>
-  <script src="js/geo.js?v=6"></script>
-  <script src="js/data.js?v=6"></script>
-  <script src="js/ui.js?v=6"></script>
-  <script src="js/explore.js?v=6"></script>
-  <script src="js/place.js?v=6"></script>
-  <script src="js/leave.js?v=6"></script>
-  <script src="js/traces.js?v=6"></script>
-  <script src="js/app.js?v=6"></script>
-  <script src="js/home.js?v=6"></script>
+  <script src="js/config.js?v=7"></script>
+  <script src="js/geo.js?v=7"></script>
+  <script src="js/data.js?v=7"></script>
+  <script src="js/ui.js?v=7"></script>
+  <script src="js/explore.js?v=7"></script>
+  <script src="js/place.js?v=7"></script>
+  <script src="js/leave.js?v=7"></script>
+  <script src="js/traces.js?v=7"></script>
+  <script src="js/app.js?v=7"></script>
+  <script src="js/home.js?v=7"></script>
 </body>
 </html>

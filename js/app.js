@@ -2,26 +2,41 @@ const App = (() => {
   const $ = (id) => document.getElementById(id);
   let pendingLeavePlace = null;
 
+  const showSetupBanner = (msg) => {
+    const b = $("setup-banner");
+    b.hidden = false;
+    b.innerHTML = `⚠️ ${msg}`;
+  };
+
   const init = async () => {
-    try {
-      await Data.init();
-    } catch (e) {
-      const banner = $("setup-banner");
-      banner.hidden = false;
-      banner.innerHTML = `⚠️ ${e.message}`;
-      show("home");
-      Home.init();
-      return;
-    }
+    // Bind everything BEFORE any network/I/O so the UI always works —
+    // even if Supabase, a CDN, or the map fails.
     UI.bindModalClosers();
     UI.setAuthLabel();
     bindAuth();
     bindActions();
-    await Explore.init();
-
-    await loadAll();
+    bindCtas();
     show("home");
     Home.init();
+
+    try {
+      await Data.init();
+    } catch (e) {
+      showSetupBanner(e.message);
+      return;
+    }
+    UI.setAuthLabel(); // a prior session may have been restored
+
+    window.__rtcInitMap = () => {
+      if (!Explore.mapReady()) { try { Explore.init(); } catch (e) { UI.showToast(e.message, true); } }
+    };
+    try {
+      await Explore.init();
+    } catch (e) {
+      UI.showToast(e.message, true);
+    }
+
+    await loadAll();
   };
 
   // --------- router ---------
@@ -47,9 +62,25 @@ const App = (() => {
       const [places, memories] = await Promise.all([Data.listPlaces(), Data.listMemories()]);
       Explore.setPlaces(places, memories);
     } catch (e) {
-      const toast = document.getElementById("toast");
-      if (!toast.classList.contains("loading")) UI.showToast(e.message, true);
+      const msg = (e && e.message) || String(e);
+      if (/does not exist|relation|404|enable_rls/i.test(msg)) {
+        showSetupBanner("The trace database isn't set up yet — run supabase/schema.sql in the Supabase SQL editor, then refresh.");
+      } else {
+        const toast = document.getElementById("toast");
+        if (!toast.classList.contains("loading")) UI.showToast(msg, true);
+      }
     }
+  };
+
+  // homepage / CTA buttons: "Explore the Map" and "Leave a Trace"
+  const bindCtas = () => {
+    document.querySelectorAll("[data-goto]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const target = btn.dataset.goto;
+        if (target === "leave") startLeave({ fromHome: true });
+        else show("explore");
+      });
+    });
   };
 
   const openPlace = (place) => Place.show(place);
