@@ -107,6 +107,8 @@ const Data = (() => {
 
   const getDisplayName = (authorId) => {
     return profileCache[authorId] || "Someone";
+  };
+
   // ---------- default rich seed data ----------
   const DEFAULT_PROFILES = {
     "p1": "Aarav",
