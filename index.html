@@ -1,20 +1,20 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Leave a Trace — someone was here before you</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>" />
+  <title>Leave a Trace â€” someone was here before you</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>ðŸ§­</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <link rel="stylesheet" href="css/style.css?v=8" />
-  <link rel="stylesheet" href="css/home.css?v=8" />
+  <link rel="stylesheet" href="css/style.css?v=9" />
+  <link rel="stylesheet" href="css/home.css?v=9" />
 </head>
 <body>
   <header class="topbar">
-    <button class="brand" id="brand" title="Home">🧭 Leave a <b>Trace</b></button>
+    <button class="brand" id="brand" title="Home">ðŸ§­ Leave a <b>Trace</b></button>
 
     <nav class="nav">
       <button class="nav-item" data-view="explore">Explore</button>
@@ -33,7 +33,7 @@
 
   <!-- ======================== OPENING ======================== -->
   <div id="opening" class="opening" aria-hidden="true">
-    <button id="o-skip" type="button">Skip →</button>
+    <button id="o-skip" type="button">Skip â†’</button>
 
     <div class="o-world">
       <div class="o-grid"></div>
@@ -52,7 +52,7 @@
       </div>
       <div class="o-place o-cafe">
         <div class="o-pin"></div>
-        <span class="o-lab">Café</span>
+        <span class="o-lab">CafÃ©</span>
         <div class="o-yrs"><span>2024</span><span>2025</span><span>2026</span></div>
       </div>
       <div class="o-place o-street">
@@ -81,24 +81,24 @@
           <button class="btn btn-primary btn-xl" data-goto="explore">Explore the Map</button>
           <button class="btn btn-ghost btn-xl" data-goto="leave">Leave a Trace</button>
         </div>
-        <div class="scroll-hint ro">↓</div>
+        <div class="scroll-hint ro">â†“</div>
       </div>
 
       <!-- QUICK CONCEPT -->
       <section class="home-section" id="concept">
-        <h2 class="hs-title ro">A mountain. A college. A café.</h2>
+        <h2 class="hs-title ro">A mountain. A college. A cafÃ©.</h2>
         <p class="hs-sub ro">Different people. Different years. Same place.</p>
 
         <div class="concept-places">
           <div class="place-card ro">
-            <div class="place-icon">⛰️</div>
+            <div class="place-icon">â›°ï¸</div>
             <div class="place-name">Mountain</div>
             <div class="place-who">People came here alone, at sunrise, and left a word behind.</div>
           </div>
           <div class="place-card place-college ro">
-            <div class="place-icon">🎓</div>
+            <div class="place-icon">ðŸŽ“</div>
             <div class="place-name">College</div>
-            <div class="place-who">A hundred students walked the same steps — and some of them wrote.</div>
+            <div class="place-who">A hundred students walked the same steps â€” and some of them wrote.</div>
             <div class="college-spots">
               <span>Library</span><span>Cafeteria</span><span>Classroom</span><span>Ground</span><span>Hostel</span><span>a favorite bench</span>
             </div>
@@ -110,11 +110,73 @@
             </div>
           </div>
           <div class="place-card ro">
-            <div class="place-icon">☕</div>
-            <div class="place-name">Café</div>
+            <div class="place-icon">â˜•</div>
+            <div class="place-name">CafÃ©</div>
             <div class="place-who">Conversations that ended years ago, preserved at the same table.</div>
           </div>
         </div>
+      </section>
+
+      <!-- CORE FLOW -->
+      <section class="home-section" id="flow">
+        <h2 class="hs-title ro">How it works</h2>
+        <p class="hs-sub ro">Four simple steps. No followers. No feeds. Just places.</p>
+
+        <div class="flow-steps">
+          <div class="flow-step ro">
+            <span class="f-num">01</span><div class="f-emoji">ðŸ—ºï¸</div>
+            <b>Explore</b><p>Open the map and find the places that hold traces.</p>
+          </div>
+          <div class="flow-arrow a1">â†’</div>
+          <div class="flow-step ro">
+            <span class="f-num">02</span><div class="f-emoji">ðŸ“</div>
+            <b>Discover</b><p>Every trace stays locked until you're physically there â€” walk within ~100 m and it opens. Reveal who was here before you.</p>
+          </div>
+          <div class="flow-arrow a2">â†’</div>
+          <div class="flow-step ro">
+            <span class="f-num">03</span><div class="f-emoji">âœï¸</div>
+            <b>Leave</b><p>Write your own memory where you stand, and seal it in time for whoever comes next.</p>
+          </div>
+          <div class="flow-arrow a3">â†’</div>
+          <div class="flow-step ro">
+            <span class="f-num">04</span><div class="f-emoji">ðŸ›¤ï¸</div>
+            <b>Continue</b><p>Years later, someone walks the same ground and finds what you left. Your story lives on.</p>
+          </div>
+        </div>
+        <p class="flow-note ro">ðŸ“Œ Traces never unlock remotely. Your feet have to do the walking.</p>
+      </section>
+
+      <!-- MAIN IDEA -->
+      <section class="home-section alt" id="idea">
+        <h2 class="hs-title ro">What if someone who thought like you<br />was here before you?</h2>
+
+        <div class="idea-wrap">
+          <div class="idea-mems">
+            <div class="mem-chip ro">
+              <span class="m-yr">2024</span>
+              <p>"I came here because I needed some time alone."</p>
+            </div>
+            <div class="idea-link ro">â†’</div>
+            <div class="mem-chip ro">
+              <span class="m-yr">2026</span>
+              <p>"That's exactly why I came here."</p>
+            </div>
+          </div>
+          <p class="idea-tag ro">Same place. Same feeling. <b>Different time.</b></p>
+          <p class="idea-note ro">When you feel it too, you can leave your own trace and connect it to theirs â€” a quiet thread between two people years apart. No followers. No likes. Just recognition.</p>
+        </div>
+      </section>
+
+      <!-- FINAL CTA -->
+      <section class="final-cta ro">
+        <p class="fc-eyebrow">Leave a Trace</p>
+        <h2>You were here.</h2>
+        <p class="fc-sub">Leave something behind for the next person who walks the same ground.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-xl" data-goto="explore">Explore the Map</button>
+          <button class="btn btn-ghost btn-xl" data-goto="leave">Leave a Trace</button>
+        </div>
+        <p class="fc-foot">A trace stays sealed until its date opens â€” and even then, it only unlocks when you're physically at the spot, usually within 100 m.<br />Someone walked where you walk now. Leave something for whoever comes next.</p>
       </section>
 
     </div>
@@ -127,7 +189,7 @@
     <div class="map-chip" id="map-chip" hidden></div>
 
     <div class="fab">
-      <button id="locate-btn" class="btn btn-primary fab-btn" title="Show my location">◎ My location</button>
+      <button id="locate-btn" class="btn btn-primary fab-btn" title="Show my location">â—Ž My location</button>
     </div>
 
     <div class="legend">
@@ -144,7 +206,7 @@
   <!-- ========================= PLACE PAGE =========================== -->
   <section class="view scroll-view" data-view="place" hidden>
     <div class="page-head">
-      <button class="btn btn-ghost btn-sm" id="place-back">← Back</button>
+      <button class="btn btn-ghost btn-sm" id="place-back">â† Back</button>
     </div>
     <div id="place-body"></div>
   </section>
@@ -160,9 +222,9 @@
       <h1>Trails</h1>
     </div>
     <div class="stub card">
-      <div class="stub-icon">🛤️</div>
+      <div class="stub-icon">ðŸ›¤ï¸</div>
       <h3>Follow someone through their life</h3>
-      <p>As a person moves on — <b>college → first workplace → a new city → a mountain</b> — each trace they leave can become part of their journey. Discover it one place at a time, the same way they lived it.</p>
+      <p>As a person moves on â€” <b>college â†’ first workplace â†’ a new city â†’ a mountain</b> â€” each trace they leave can become part of their journey. Discover it one place at a time, the same way they lived it.</p>
       <p>A trail may carry a clue: <em>"The next trace is somewhere I used to go when I needed to think."</em></p>
       <p>Journeys are being woven together now. The traces themselves are already out there on the map.</p>
       <div class="hero-actions">
@@ -182,11 +244,11 @@
   <!-- ============================= AUTH ============================= -->
   <div id="modal-auth" class="modal" hidden>
     <div class="modal-card">
-      <button class="modal-close" data-close="modal-auth">✕</button>
+      <button class="modal-close" data-close="modal-auth">âœ•</button>
 
       <div id="auth-view-form" class="auth-view">
         <div class="auth-head">
-          <div class="auth-icon">⏳</div>
+          <div class="auth-icon">â³</div>
           <h3 id="auth-title">Sign in</h3>
           <p class="auth-sub" id="auth-sub">Traces need an author. Sign in to leave yours.</p>
         </div>
@@ -194,14 +256,14 @@
           <label>Email<input id="auth-username" type="email" placeholder="you@example.com" required /></label>
           <label class="pw-label">Password
             <span class="pw-wrap">
-              <input id="auth-password" type="password" placeholder="••••••••" required />
-              <button type="button" class="pw-toggle" id="pw-toggle" tabindex="-1" aria-label="Show password">👁</button>
+              <input id="auth-password" type="password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" required />
+              <button type="button" class="pw-toggle" id="pw-toggle" tabindex="-1" aria-label="Show password">ðŸ‘</button>
             </span>
           </label>
           <label class="pw-label" id="pw-confirm-field" hidden>Confirm password
             <span class="pw-wrap">
-              <input id="auth-confirm" type="password" placeholder="••••••••" />
-              <button type="button" class="pw-toggle" id="pw-confirm-toggle" tabindex="-1" aria-label="Show password">👁</button>
+              <input id="auth-confirm" type="password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" />
+              <button type="button" class="pw-toggle" id="pw-confirm-toggle" tabindex="-1" aria-label="Show password">ðŸ‘</button>
             </span>
           </label>
           <div id="auth-err" class="form-err" hidden></div>
@@ -212,15 +274,15 @@
 
       <div id="auth-view-verify" class="auth-view" hidden>
         <div class="auth-head">
-          <div class="auth-icon">✉️</div>
+          <div class="auth-icon">âœ‰ï¸</div>
           <h3>Confirm your email</h3>
           <p class="auth-sub">We sent a confirmation link to<br /><b id="verify-email"></b>.<br />Open it, then click below to finish.</p>
         </div>
         <div class="auth-form">
-          <button class="btn btn-primary" id="verify-done" type="button">I confirmed — sign me in</button>
+          <button class="btn btn-primary" id="verify-done" type="button">I confirmed â€” sign me in</button>
           <button class="btn-ghost btn" id="verify-resend" type="button">Resend link</button>
           <span class="verify-hint" id="verify-hint"></span>
-          <button class="btn-link" id="verify-back" type="button">← Back to sign in</button>
+          <button class="btn-link" id="verify-back" type="button">â† Back to sign in</button>
         </div>
       </div>
 
@@ -242,15 +304,15 @@
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js?v=8"></script>
-  <script src="js/geo.js?v=8"></script>
-  <script src="js/data.js?v=8"></script>
-  <script src="js/ui.js?v=8"></script>
-  <script src="js/explore.js?v=8"></script>
-  <script src="js/place.js?v=8"></script>
-  <script src="js/leave.js?v=8"></script>
-  <script src="js/traces.js?v=8"></script>
-  <script src="js/app.js?v=8"></script>
-  <script src="js/home.js?v=8"></script>
+  <script src="js/config.js?v=9"></script>
+  <script src="js/geo.js?v=9"></script>
+  <script src="js/data.js?v=9"></script>
+  <script src="js/ui.js?v=9"></script>
+  <script src="js/explore.js?v=9"></script>
+  <script src="js/place.js?v=9"></script>
+  <script src="js/leave.js?v=9"></script>
+  <script src="js/traces.js?v=9"></script>
+  <script src="js/app.js?v=9"></script>
+  <script src="js/home.js?v=9"></script>
 </body>
 </html>
